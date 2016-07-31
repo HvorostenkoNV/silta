@@ -1,0 +1,38 @@
+.silta-diy-module-subtable-element              {margin-bottom: 10px}
+.silta-diy-module-subtable-element[new-element] {display: none}
+.silta-diy-module-subtable-buttons              {padding: 10px 0}
+
+.silta-diy-module-subtable-element [head]
+	{
+	background-color: #E2E2E2;
+	color: #777;
+	font-weight: bold;
+	text-align: center;
+	padding: 5px;
+	}
+
+.silta-diy-module-subtable-element [hide-form]
+	{
+	background: url(images/hide_form.png) center center no-repeat;
+	background-size: 10px;
+	cursor: pointer;
+	float: right;
+	margin-top: -2px;
+	padding: 3px;
+	-webkit-transition: all 250ms ease;
+	   -moz-transition: all 250ms ease;
+	    -ms-transition: all 250ms ease;
+	     -o-transition: all 250ms ease;
+	        transition: all 250ms ease;
+	width: 12px;
+	height: 12px;
+	}
+
+.silta-diy-module-subtable-element [hide-form]:hover
+	{
+	background: #777 url(images/hide_form_hover.png) center center no-repeat;
+	background-size: 10px;
+	-webkit-border-radius: 50%;
+	   -moz-border-radius: 50%;
+	        border-radius: 50%;
+	}

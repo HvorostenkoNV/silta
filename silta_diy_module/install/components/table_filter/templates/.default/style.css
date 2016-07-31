@@ -1,0 +1,47 @@
+#silta-diy-module-table-filter-read,
+#silta-diy-module-table-filter-read *,
+#silta-diy-module-table-filter-write,
+#silta-diy-module-table-filter-write *       {font-family: Verdana, Arial, helvetica, sans-serif;font-size: 12px}
+#silta-diy-module-table-filter-read,
+#silta-diy-module-table-filter-write > table {border-collapse: collapse}
+
+#silta-diy-module-table-filter-read
+	{
+	border: 1px dotted;
+	margin-bottom: 15px;
+	width: 600px;
+	}
+
+#silta-diy-module-table-filter-write {display: none}
+#silta-diy-module-table-filter-write > table
+	{
+	background: #FFF;
+	-webkit-border-radius: 5px;
+	   -moz-border-radius: 5px;
+	        border-radius: 5px;
+	-webkit-box-shadow: -5px 10px 15px 0px rgba(0,0,0,0.35);
+	   -moz-box-shadow: -5px 10px 15px 0px rgba(0,0,0,0.35);
+	        box-shadow: -5px 10px 15px 0px rgba(0,0,0,0.35);
+	margin-bottom: 15px;
+	}
+
+#silta-diy-module-table-filter-write [form-hat]
+	{
+	-webkit-border-top-right-radius: 5px;
+	 -webkit-border-top-left-radius: 5px;
+	    -moz-border-radius-topright: 5px;
+	     -moz-border-radius-topleft: 5px;
+	        border-top-right-radius: 5px;
+	         border-top-left-radius: 5px;
+	font-weight: bold;
+	padding: 2px;
+	text-align: center;
+	}
+#silta-diy-module-table-filter-write [button-cell] {padding: 2px;text-align: left}
+/* --------------------------------------------------------------------- */
+/* ------------------------------- цвета ------------------------------- */
+/* --------------------------------------------------------------------- */
+#silta-diy-module-table-filter-read             {border-color: #E2E2E2}
+#silta-diy-module-table-filter-read td,
+#silta-diy-module-table-filter-read th          {background-color: #F0F0F0;color: #777}
+#silta-diy-module-table-filter-write [form-hat] {background-color: #E2E2E2;color: #777}

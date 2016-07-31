@@ -1,0 +1,13 @@
+.silta-form-manage-row-button
+	{
+	background-repeat: no-repeat;
+	background-size: 20px;
+	cursor: pointer;
+	display: inline-block;
+	margin: 0px 2px -5px 2px;
+	width:  20px;
+	height: 20px;
+	}
+
+.silta-form-manage-row-button[type=add]    {background-image: url(images/add_row.png)}
+.silta-form-manage-row-button[type=remove] {background-image: url(images/remove_row.png)}

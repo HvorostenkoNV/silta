@@ -1,0 +1,6 @@
+<?
+class SProceduresFAWWriteOffApplicationElement extends SIBlockElement
+	{
+
+	}
+?>

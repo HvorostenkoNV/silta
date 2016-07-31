@@ -1,0 +1,192 @@
+#silta-form-element-selector-form,
+#silta-form-element-selector-form *
+	{
+	border: none;
+	border-collapse: collapse;
+	color: #333;
+	font-family: Verdana, Arial, helvetica, sans-serif;
+	font-size: 12px;
+	margin:  0px;
+	padding: 0px;
+	-webkit-user-select: none;
+	 -khtml-user-select: none;
+	   -moz-user-select: none;
+	     -o-user-select: none;
+	        user-select: none;
+	}
+
+#silta-form-element-selector-form
+	{
+	background: #FFF;
+	-webkit-border-radius: 5px;
+	   -moz-border-radius: 5px;
+	        border-radius: 5px;
+	-webkit-box-shadow: 0px 0px 5px 5px rgba(0,0,0,0.2);
+	   -moz-box-shadow: 0px 0px 5px 5px rgba(0,0,0,0.2);
+	        box-shadow: 0px 0px 5px 5px rgba(0,0,0,0.2);
+	padding: 5px;
+	width: 500px;
+	z-index: 600;
+	}
+/* --------------------------------------------------------------------- */
+/* ---------------------------- шапка формы ---------------------------- */
+/* --------------------------------------------------------------------- */
+#silta-form-element-selector-form [selector-hat] {margin-bottom: 10px;width: 98%}
+#silta-form-element-selector-form [selector-hat] th
+	{
+	cursor: move;
+	font-size: 110%;
+	font-weight: bold;
+	padding: 2px 4px;
+	text-align: center;
+	text-decoration: underline;
+	width: 100%;
+	}
+/* --------------------------------------------------------------------- */
+/* ----------------------------- тело формы ---------------------------- */
+/* --------------------------------------------------------------------- */
+#silta-form-element-selector-form [selector-content]
+	{
+	height: 430px;
+	overflow: scroll;
+	padding-bottom: 5px;
+	width: 98%;
+	}
+#silta-form-element-selector-form [selector-content] table {width: 100%}
+/* ------------------------------------------- */
+/* ----------- сортировка таблицы ------------ */
+/* ------------------------------------------- */
+#silta-form-element-selector-form [selector-content] [table-sorter]
+	{
+	cursor: pointer;
+	font-weight: bold;
+	padding: 2px 4px;
+	white-space: nowrap;
+	}
+#silta-form-element-selector-form [selector-content] [table-sorter]:hover {text-decoration: underline}
+
+#silta-form-element-selector-form [selector-content] [table-sorter][sort-type=asc],
+#silta-form-element-selector-form [selector-content] [table-sorter][sort-type=desc]
+	{
+	background: 100% center no-repeat;
+	background-size: 10px;
+	padding-right: 15px;
+	}
+#silta-form-element-selector-form [selector-content] [table-sorter][sort-type=asc]  {background-image: url(images/sort_table_down.png)}
+#silta-form-element-selector-form [selector-content] [table-sorter][sort-type=desc] {background-image: url(images/sort_table_up.png)}
+/* ------------------------------------------- */
+/* -------------- тело таблицы --------------- */
+/* ------------------------------------------- */
+#silta-form-element-selector-form [selector-content] [element-row] > td
+	{
+	border-top: 1px dotted #cdcdcd;
+	cursor: pointer;
+	padding: 2px 4px;
+	text-align: left;
+	vertical-align: top;
+	}
+#silta-form-element-selector-form [selector-content] [element-row]:hover    * {text-decoration: underline}
+#silta-form-element-selector-form [selector-content] [element-row][checked] * {font-weight: bold}
+/* --------------------------------------------------------------------- */
+/* ---------------------------- футтер формы --------------------------- */
+/* --------------------------------------------------------------------- */
+#silta-form-element-selector-form [selector-foot]    {margin-top: 5px;width: 98%}
+#silta-form-element-selector-form [selector-foot] td {padding: 0 2px}
+
+#silta-form-element-selector-form [selector-foot] [navigation-page=active]         {font-weight: bold}
+#silta-form-element-selector-form [selector-foot] [navigation-page=unactive]:hover {cursor: pointer;text-decoration: underline}
+#silta-form-element-selector-form [selector-foot] [navigation-page=active],
+#silta-form-element-selector-form [selector-foot] [navigation-page=unactive]       {padding-right: 2px}
+#silta-form-element-selector-form [selector-foot] [info]                           {text-align: right}
+
+#silta-form-element-selector-form [selector-foot] [search-cell] {padding: 0 5px}
+#silta-form-element-selector-form [selector-foot] [search-cell] input
+	{
+	border: 1px solid #cdcdcd;
+	-webkit-border-radius: 4px;
+	   -moz-border-radius: 4px;
+	        border-radius: 4px;
+	-webkit-box-shadow: 0px 1px 0px 0px rgba(255,255,255,0.5), inset 0px 1px 2px 0px rgba(0,0,0,0.2);
+	   -moz-box-shadow: 0px 1px 0px 0px rgba(255,255,255,0.5), inset 0px 1px 2px 0px rgba(0,0,0,0.2);
+	        box-shadow: 0px 1px 0px 0px rgba(255,255,255,0.5), inset 0px 1px 2px 0px rgba(0,0,0,0.2);
+	margin:  10px 0;
+	padding: 3px;
+	outline: none;
+	width: 80%;
+	}
+
+#silta-form-element-selector-form [selector-foot] [search-cell] input:focus {background-color: #FAFFBD}
+#silta-form-element-selector-form [selector-foot] [company-logo]
+	{
+	background: url(images/company_logo.png) center right no-repeat;
+	background-size: 50px;
+	float: right;
+	width:  50px;
+	height: 50px;
+	}
+
+#silta-form-element-selector-form .silta-form-element-selector-item       {font-weight: normal !important}
+#silta-form-element-selector-form .silta-form-element-selector-item:hover {cursor: pointer;text-decoration: underline}
+/* --------------------------------------------------------------------- */
+/* ------------------------ кнопка вызова формы ------------------------ */
+/* --------------------------------------------------------------------- */
+.silta-form-element-selector-call-button
+	{
+	background-image: -webkit-linear-gradient(top, #f9f9f9 0%, #e6e6e6 100%);
+	background-image:    -moz-linear-gradient(top, #f9f9f9 0%, #e6e6e6 100%);
+	background-image:     -ms-linear-gradient(top, #f9f9f9 0%, #e6e6e6 100%);
+	background-image:      -o-linear-gradient(top, #f9f9f9 0%, #e6e6e6 100%);
+	background-image:         linear-gradient(top, #f9f9f9 0%, #e6e6e6 100%);
+	border: solid 1px #bfb9b9;
+	-webkit-box-shadow: 0px 0px 2px #bababa, inset 0px 0px 1px #FFF;
+	   -moz-box-shadow: 0px 0px 2px #bababa, inset 0px 0px 1px #FFF;
+	        box-shadow: 0px 0px 2px #bababa, inset 0px 0px 1px #FFF;
+	-webkit-border-radius: 4px;
+	   -moz-border-radius: 4px;
+	        border-radius: 4px;
+	color: #666;
+	cursor: pointer;
+	display: inline-block;
+	font-weight: bold;
+	margin:  2px;
+	padding: 6px 10px;
+	text-align: center;
+	text-decoration: none;
+	white-space: nowrap;
+	}
+.silta-form-element-selector-call-button:hover        {background: #f9f9f9}
+.silta-form-element-selector-call-button[alert-input] {border-color: #ff0000 !important}
+
+.silta-form-element-selector-call-button [icon]
+	{
+	background: url(images/call_button_icon.png) no-repeat;
+	background-size: 20px;
+	display: inline-block;
+	margin: 0 0 -5px 5px;
+	width:  20px;
+	height: 20px;
+	}
+/* --------------------------------------------------------------------- */
+/* ---------------------- кнопка удаление элемента --------------------- */
+/* --------------------------------------------------------------------- */
+[silta-form-element-selector-checked-element] [delete-element]
+	{
+	background: url(images/remove_element.png) no-repeat;
+	background-size: 20px;
+	cursor: pointer;
+	display: inline-block;
+	margin: 0px 2px -5px 2px;
+	width:  20px;
+	height: 20px;
+	}
+/* --------------------------------------------------------------------- */
+/* ------------------------------- цвета ------------------------------- */
+/* --------------------------------------------------------------------- */
+#silta-form-element-selector-form [selector-hat] th,
+#silta-form-element-selector-form [selector-content] [table-sorter][sort-type=asc],
+#silta-form-element-selector-form [selector-content] [table-sorter][sort-type=desc],
+#silta-form-element-selector-form [selector-content] [element-row]:hover    *,
+#silta-form-element-selector-form [selector-content] [element-row][checked] *,
+#silta-form-element-selector-form [selector-foot] [navigation-page=active],
+#silta-form-element-selector-form [selector-foot] [info] b,
+#silta-form-element-selector-form .silta-form-element-selector-item {color: #E3972C !important}

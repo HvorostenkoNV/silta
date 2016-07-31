@@ -1,0 +1,5 @@
+.silta-diy-module-element-changings-table                   {width: 100%}
+.silta-diy-module-element-changings-table *                 {font-size: 95%}
+.silta-diy-module-element-changings-table > tbody > tr > th {color: #666;text-align: right}
+.silta-diy-module-element-changings-table > tbody > tr > th,
+.silta-diy-module-element-changings-table > tbody > tr > td {padding:0 2px;vertical-align: top}

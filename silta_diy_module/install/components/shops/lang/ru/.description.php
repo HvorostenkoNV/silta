@@ -1,0 +1,4 @@
+<?
+$MESS["SDM_SHOPS_COMPONENT_NAME"]        = 'Магазины';
+$MESS["SDM_SHOPS_COMPONENT_DESCRIPTION"] = 'Магазины DIY';
+?>

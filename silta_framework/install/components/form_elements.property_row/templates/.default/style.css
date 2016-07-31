@@ -1,0 +1,6 @@
+.silta-form-property-row > th {text-align: right}
+.silta-form-property-row > td {text-align: left}
+.silta-form-property-row > th,
+.silta-form-property-row > td {padding: 2px 4px;vertical-align: top}
+
+.silta-form-property-row [form-required-trigger]:before {content: '*';color: #ff0000;font-weight: bold}

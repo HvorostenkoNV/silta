@@ -1,0 +1,18 @@
+.sem-test-page-import-from
+	{
+	background-color: #f0f0f0;
+	border: 1px dotted #ddd;
+	padding: 5px;
+	}
+
+.sem-test-page-import-from > table       {width: 100%}
+.sem-test-page-import-from th            {color: #555}
+.sem-test-page-import-from [form-row] th {text-align: right}
+.sem-test-page-import-from [table-title] {background-color: #ddd;padding: 3px;margin: 10px 0}
+.sem-test-page-import-from [element-title]
+	{
+	border-bottom: 1px solid #ddd;
+	margin: auto;
+	text-align: left;
+	width: 90%;
+	}

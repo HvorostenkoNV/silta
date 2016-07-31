@@ -1,0 +1,21 @@
+#sp-faw-provision-application-page,
+#sp-faw-displacement-application-page                   {width: 100%}
+#sp-faw-provision-application-page    > tbody > tr > td,
+#sp-faw-displacement-application-page > tbody > tr > td {vertical-align: top}
+#sp-faw-provision-application-page [background-cell] div
+	{
+	background: url(images/provision_application_bg.png) center center no-repeat;
+	background-size: 300px;
+	margin: auto;
+	width:  300px;
+	height: 400px;
+	}
+
+#sp-faw-displacement-application-page [background-cell] div
+	{
+	background: url(images/displacement_application_bg.png) center center no-repeat;
+	background-size: 300px;
+	margin: auto;
+	width:  300px;
+	height: 400px;
+	}

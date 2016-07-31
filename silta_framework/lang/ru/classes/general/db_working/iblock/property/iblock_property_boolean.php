@@ -1,0 +1,4 @@
+<?
+$MESS["SF_IBLOCK_PROP_BOOLEAN_LIST_Y"] = 'Да';
+$MESS["SF_IBLOCK_PROP_BOOLEAN_LIST_N"] = 'Нет';
+?>

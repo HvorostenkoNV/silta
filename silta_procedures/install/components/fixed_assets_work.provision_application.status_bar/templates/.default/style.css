@@ -1,0 +1,43 @@
+/* --------------------------------------------------------------------- */
+/* ------------------------------ очистка ------------------------------ */
+/* --------------------------------------------------------------------- */
+.sp-faw-provision-application-status-bar *:not(a) {color: #333}
+.sp-faw-provision-application-status-bar,
+.sp-faw-provision-application-status-bar ul       {list-style-type: none}
+.sp-faw-provision-application-status-bar,
+.sp-faw-provision-application-status-bar *
+	{
+	border: none;
+	font-family: Verdana, Arial, helvetica, sans-serif;
+	font-size: 12px;
+	padding: 0;
+	margin:  0;
+	}
+/* --------------------------------------------------------------------- */
+/* ----------------------------- статус-бар ---------------------------- */
+/* --------------------------------------------------------------------- */
+.sp-faw-provision-application-status-bar    {padding: 10px 0}
+.sp-faw-provision-application-status-bar li {padding: 2px}
+
+.sp-faw-provision-application-status-bar [stage-activity]
+	{
+	display: inline-block;
+	-webkit-border-radius: 7px;
+	   -moz-border-radius: 7px;
+	        border-radius: 7px;
+	margin: 0 10px -2px 0;
+	width:  14px;
+	height: 14px;
+	}
+
+.sp-faw-provision-application-status-bar:not([procedure-closed]) [stage-activity=Y] {background: #2d73a0}
+.sp-faw-provision-application-status-bar[procedure-closed]       [stage-activity=Y] {background: #777}
+.sp-faw-provision-application-status-bar                         [stage-activity=N] {background: #CCC}
+
+.sp-faw-provision-application-status-bar [title] {display: inline-block;font-size: 110%}
+.sp-faw-provision-application-status-bar [text]  {color: #888;font-size: 90%;margin: 2px 0 0 45px}
+
+.sp-faw-provision-application-status-bar [responsibles] li                   {padding: 0 20px 0 30px}
+.sp-faw-provision-application-status-bar [sign-users]   li                   {background: left center no-repeat;background-size: 14px;padding: 0 20px 0 30px}
+.sp-faw-provision-application-status-bar [sign-users]   li[condition=signed] {background-image: url(images/user_signed.png)}
+.sp-faw-provision-application-status-bar [sign-users]   li[condition=active] {background-image: url(images/user_active.png)}

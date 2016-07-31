@@ -1,0 +1,6 @@
+<?
+$MESS["SF_IBLOCK_PROP_PHONE_LIST_WORK"]   = 'Рабочий';
+$MESS["SF_IBLOCK_PROP_PHONE_LIST_MOBILE"] = 'Мобильный';
+$MESS["SF_IBLOCK_PROP_PHONE_LIST_FAX"]    = 'Факс';
+$MESS["SF_IBLOCK_PROP_PHONE_LIST_OTHER"]  = 'Другое';
+?>

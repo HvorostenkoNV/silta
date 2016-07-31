@@ -1,0 +1,6 @@
+<?
+class SProceduresFAWPurchaseApplicationElement extends SIBlockElement
+	{
+
+	}
+?>

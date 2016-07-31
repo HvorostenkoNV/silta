@@ -1,0 +1,6 @@
+<?
+class SDiyModuleElementSales extends SDiyModuleElement
+	{
+
+	}
+?>

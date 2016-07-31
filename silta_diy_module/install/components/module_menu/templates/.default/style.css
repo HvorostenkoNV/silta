@@ -1,0 +1,103 @@
+#silta-diy-module-hat,
+#silta-diy-module-hat *
+	{
+	border-collapse: collapse;
+	border: none;
+	color: #333;
+	font-family: Verdana, Arial, helvetica, sans-serif;
+	font-size: 12px;
+	list-style-type: none;
+	margin:  0px;
+	padding: 0px;
+	}
+
+#silta-diy-module-hat               {margin-bottom: 25px;width: 100%}
+#silta-diy-module-hat [cell=menu] a {text-decoration: none}
+
+#silta-diy-module-hat [cell=menu] [main-menu] li
+	{
+	display: inline-block;
+	font-weight: bold;
+	padding-right: 10px;
+	text-align: center;
+	}
+
+#silta-diy-module-hat [cell=menu] [main-menu] a
+	{
+	display: block;
+	padding: 5px;
+	-webkit-border-radius: 5px;
+	   -moz-border-radius: 5px;
+	        border-radius: 5px;
+	}
+
+#silta-diy-module-hat [cell=menu] [main-menu] [image]
+	{
+	background: center center no-repeat;
+	background-size: 64px;
+	margin: 0 auto;
+	width:  64px;
+	height: 64px;
+	}
+
+#silta-diy-module-hat [cell=menu] [sub-menu]
+	{
+	display: none;
+	-webkit-border-radius: 5px;
+	   -moz-border-radius: 5px;
+	        border-radius: 5px;
+	-webkit-box-shadow: -5px 10px 15px 0px rgba(0,0,0,0.1);
+	   -moz-box-shadow: -5px 10px 15px 0px rgba(0,0,0,0.1);
+	        box-shadow: -5px 10px 15px 0px rgba(0,0,0,0.1);
+	padding: 3px 10px 3px 25px;
+	margin:  30px 0 15px 0;
+	width: 400px;
+	}
+
+#silta-diy-module-hat [cell=menu] [sub-menu] li
+	{
+	font-weight: bold;
+	list-style-type: disc;
+	padding: 3px 0;
+	width: -webkit-max-content;
+	width:    -moz-max-content;
+	}
+
+#silta-diy-module-hat [cell=menu] [sub-menu] a           {color: #777}
+#silta-diy-module-hat [cell=menu] [sub-menu] li:hover,
+#silta-diy-module-hat [cell=menu] [sub-menu] li[checked] {cursor: pointer;text-decoration: underline}
+
+#silta-diy-module-hat-menu-arrow
+	{
+	border: 17px solid transparent;
+	border-bottom: 17px solid;
+	position: absolute;
+	}
+/* --------------------------------------------------------------------- */
+/* -------------------------- цвета + картинки ------------------------- */
+/* --------------------------------------------------------------------- */
+#silta-diy-module-hat [cell=menu] [main-menu] li:not([checked]) a {color: #7ABCD6}
+#silta-diy-module-hat [cell=menu] [main-menu] li:hover          a,
+#silta-diy-module-hat [cell=menu] [main-menu] li[checked]       a {background-color: #7ABCD6;color: #FFF}
+#silta-diy-module-hat [cell=menu] [sub-menu]                      {background-color: #FFFBD3}
+#silta-diy-module-hat-menu-arrow                                  {border-bottom-color: #FFFBD3}
+
+#silta-diy-module-hat [cell=menu] [main-menu] li[type=shops]:not([checked])     [image] {background-image: url(images/shop.png)}
+#silta-diy-module-hat [cell=menu] [main-menu] li[type=shops]:hover              [image],
+#silta-diy-module-hat [cell=menu] [main-menu] li[type=shops][checked]           [image] {background-image: url(images/shop_active.png)}
+
+#silta-diy-module-hat [cell=menu] [main-menu] li[type=users]:not([checked])     [image] {background-image: url(images/users.png)}
+#silta-diy-module-hat [cell=menu] [main-menu] li[type=users]:hover              [image],
+#silta-diy-module-hat [cell=menu] [main-menu] li[type=users][checked]           [image] {background-image: url(images/users_active.png)}
+
+#silta-diy-module-hat [cell=menu] [main-menu] li[type=sales]:not([checked])     [image] {background-image: url(images/sales.png)}
+#silta-diy-module-hat [cell=menu] [main-menu] li[type=sales]:hover              [image],
+#silta-diy-module-hat [cell=menu] [main-menu] li[type=sales][checked]           [image] {background-image: url(images/sales_active.png)}
+
+#silta-diy-module-hat [cell=menu] [main-menu] li[type=marketing]:not([checked]) [image] {background-image: url(images/marketing.png)}
+#silta-diy-module-hat [cell=menu] [main-menu] li[type=marketing]:hover          [image],
+#silta-diy-module-hat [cell=menu] [main-menu] li[type=marketing][checked]       [image] {background-image: url(images/marketing_active.png)}
+
+#silta-diy-module-hat [cell=menu] [main-menu] li[type=settings]:not([checked])  [image] {background-image: url(images/settings.png)}
+#silta-diy-module-hat [cell=menu] [main-menu] li[type=settings]:hover           [image],
+#silta-diy-module-hat [cell=menu] [main-menu] li[type=settings][checked]        [image] {background-image: url(images/settings_active.png)}

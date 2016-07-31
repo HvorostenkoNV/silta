@@ -1,0 +1,84 @@
+/* --------------------------------------------------------------------- */
+/* ------------------------------ очистка ------------------------------ */
+/* --------------------------------------------------------------------- */
+.silta-diy-module-table-list              {border-collapse: collapse}
+.silta-diy-module-table-list *            {font-family: Verdana, Arial, helvetica, sans-serif;font-size: 12px}
+.silta-diy-module-table-list > thead th,
+.silta-diy-module-table-list > tbody td,
+.silta-diy-module-table-list > tfoot th,
+.silta-diy-module-table-list > tfoot td   {border: none;color: #333;padding: 0;margin: 0}
+/* --------------------------------------------------------------------- */
+/* ------------------------------ таблица ------------------------------ */
+/* --------------------------------------------------------------------- */
+.silta-diy-module-table-list                   {margin: 20px 0;width: 100%}
+.silta-diy-module-table-list > tbody > tr > td {border: 1px solid;padding: 3px}
+/* --------------------------------------------------------------------- */
+/* ------------------------------- шапка ------------------------------- */
+/* --------------------------------------------------------------------- */
+.silta-diy-module-table-list > thead > tr > th
+	{
+	border: 1px solid;
+	padding: 3px;
+	text-align: left;
+	white-space: nowrap;
+	}
+
+.silta-diy-module-table-list > thead [sort-type=asc],
+.silta-diy-module-table-list > thead [sort-type=desc] {background: 98% center no-repeat;background-size: 8px;padding-right: 20px}
+.silta-diy-module-table-list > thead [sort-type=asc]  {background-image: url(images/sort_asc.png)}
+.silta-diy-module-table-list > thead [sort-type=desc] {background-image: url(images/sort_desc.png)}
+
+.silta-diy-module-table-list > thead button
+	{
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	display: block;
+	font-weight: bold;
+	}
+/* --------------------------------------------------------------------- */
+/* ------------------------------- футер ------------------------------- */
+/* --------------------------------------------------------------------- */
+.silta-diy-module-table-list > tfoot > tr > td         {border: 1px solid}
+.silta-diy-module-table-list > tfoot > tr > td > table {width: 100%}
+
+.silta-diy-module-table-list > tfoot [multi-editor]    {display: none}
+.silta-diy-module-table-list > tfoot [multi-editor] th,
+.silta-diy-module-table-list > tfoot [multi-editor] td {padding: 0 2px;vertical-align: top}
+.silta-diy-module-table-list > tfoot [multi-editor] th {text-align: right}
+
+.silta-diy-module-table-list > tfoot [navigator]    {float: right}
+.silta-diy-module-table-list > tfoot [navigator] td {text-align: right}
+.silta-diy-module-table-list > tfoot [navigator] th {text-align: left}
+
+.silta-diy-module-table-list > tfoot [navigator] button
+	{
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	padding: 0 1px;
+	}
+
+.silta-diy-module-table-list > tfoot [navigator] button:hover    {text-decoration: underline}
+.silta-diy-module-table-list > tfoot [navigator] button[checked] {font-weight: bold}
+/* --------------------------------------------------------------------- */
+/* ------------------------------- цвета ------------------------------- */
+/* --------------------------------------------------------------------- */
+.silta-diy-module-table-list > tbody > tr:nth-child(odd) td {background-color: #F7F7F7}
+.silta-diy-module-table-list > tbody > tr:hover td          {background-color: #FFFBD3}
+
+.silta-diy-module-table-list > thead button,
+.silta-diy-module-table-list > tfoot [multi-editor] td,
+.silta-diy-module-table-list > tfoot [multi-editor] th,
+.silta-diy-module-table-list > tfoot [navigator]    *   {color: #777}
+
+.silta-diy-module-table-list > thead > tr > th,
+.silta-diy-module-table-list > tbody > tr > td,
+.silta-diy-module-table-list > tfoot > tr > td {border-color: #E2E2E2}
+
+.silta-diy-module-table-list > thead > tr > th,
+.silta-diy-module-table-list > tfoot > tr > td {background-color: #F0F0F0}
+
+.silta-diy-module-table-list > thead [sort-type]:hover,
+.silta-diy-module-table-list > thead [sort-type=asc],
+.silta-diy-module-table-list > thead [sort-type=desc] {background-color: #E2E2E2}

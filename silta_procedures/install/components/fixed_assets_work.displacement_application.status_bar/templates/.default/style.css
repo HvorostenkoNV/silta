@@ -1,0 +1,38 @@
+/* --------------------------------------------------------------------- */
+/* ------------------------------ очистка ------------------------------ */
+/* --------------------------------------------------------------------- */
+.sp-faw-displacement-application-status-bar *:not(a) {color: #333}
+.sp-faw-displacement-application-status-bar,
+.sp-faw-displacement-application-status-bar ul       {list-style-type: none}
+.sp-faw-displacement-application-status-bar,
+.sp-faw-displacement-application-status-bar *
+	{
+	border: none;
+	font-family: Verdana, Arial, helvetica, sans-serif;
+	font-size: 12px;
+	padding: 0;
+	margin:  0;
+	}
+/* --------------------------------------------------------------------- */
+/* ----------------------------- статус-бар ---------------------------- */
+/* --------------------------------------------------------------------- */
+.sp-faw-displacement-application-status-bar    {padding: 10px 0}
+.sp-faw-displacement-application-status-bar li {padding: 2px}
+
+.sp-faw-displacement-application-status-bar [stage-activity]
+	{
+	display: inline-block;
+	-webkit-border-radius: 7px;
+	   -moz-border-radius: 7px;
+	        border-radius: 7px;
+	margin: 0 10px -2px 0;
+	width:  14px;
+	height: 14px;
+	}
+
+.sp-faw-displacement-application-status-bar:not([procedure-closed]) [stage-activity=Y] {background: #F27C34}
+.sp-faw-displacement-application-status-bar[procedure-closed]       [stage-activity=Y] {background: #777}
+.sp-faw-displacement-application-status-bar                         [stage-activity=N] {background: #CCC}
+
+.sp-faw-displacement-application-status-bar [title] {display: inline-block;font-size: 110%}
+.sp-faw-displacement-application-status-bar [text]  {color: #888;font-size: 90%;margin: 2px 0 0 45px}

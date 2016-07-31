@@ -1,0 +1,176 @@
+#silta-form-user-selector-form,
+#silta-form-user-selector-form *
+	{
+	border: none;
+	border-collapse: collapse;
+	color: #333;
+	font-family: Verdana, Arial, helvetica, sans-serif;
+	font-size: 12px;
+	list-style-type: none;
+	margin:  0px;
+	padding: 0px;
+	-webkit-user-select: none;
+	 -khtml-user-select: none;
+	   -moz-user-select: none;
+	     -o-user-select: none;
+	        user-select: none;
+	}
+
+#silta-form-user-selector-form
+	{
+	background: #FFF;
+	-webkit-border-radius: 5px;
+	   -moz-border-radius: 5px;
+	        border-radius: 5px;
+	-webkit-box-shadow: 0px 0px 5px 5px rgba(0,0,0,0.2);
+	   -moz-box-shadow: 0px 0px 5px 5px rgba(0,0,0,0.2);
+	        box-shadow: 0px 0px 5px 5px rgba(0,0,0,0.2);
+	padding: 5px;
+	width: 500px;
+	z-index: 500;
+	}
+/* --------------------------------------------------------------------- */
+/* ---------------------------- шапка формы ---------------------------- */
+/* --------------------------------------------------------------------- */
+#silta-form-user-selector-form [selector-hat] {margin-bottom: 10px;width: 98%}
+#silta-form-user-selector-form [selector-hat] th
+	{
+	cursor: move;
+	font-size: 110%;
+	font-weight: bold;
+	padding: 2px 4px;
+	text-align: center;
+	text-decoration: underline;
+	width: 100%;
+	}
+/* --------------------------------------------------------------------- */
+/* ----------------------------- тело формы ---------------------------- */
+/* --------------------------------------------------------------------- */
+#silta-form-user-selector-form [selector-content]
+	{
+	height: 430px;
+	overflow-y: scroll;
+	padding-bottom: 5px;
+	width: 98%;
+	}
+
+#silta-form-user-selector-form [selector-content] table       {width: 100%}
+#silta-form-user-selector-form [selector-content] h3          {padding: 4px 0}
+#silta-form-user-selector-form [selector-content] h3[checked] {text-decoration: underline}
+#silta-form-user-selector-form [selector-content] h3:not([checked])
+	{
+	background: url(images/department_section.png) left center no-repeat;
+	background-size: 20px;
+	padding-left: 25px;
+	}
+
+#silta-form-user-selector-form [selector-content] ul
+	{
+	border-left: 1px solid #C4C4C4;
+	display: none;
+	margin-left:  10px;
+	padding-left: 10px;
+	}
+
+#silta-form-user-selector-form [selector-content] li[boss]
+	{
+	background: url(images/boss.png) right center no-repeat;
+	background-size: 20px;
+	padding-right: 25px;
+	}
+
+#silta-form-user-selector-form [selector-content] h3,
+#silta-form-user-selector-form [selector-content] li       {white-space: nowrap;width: -webkit-max-content;width: -moz-max-content}
+#silta-form-user-selector-form [selector-content] h3:hover,
+#silta-form-user-selector-form [selector-content] li:hover {text-decoration: underline;cursor: pointer}
+
+#silta-form-user-selector-form [selector-content] li                  {padding: 2px 0}
+#silta-form-user-selector-form [selector-content] li[type=user][checked],
+#silta-form-user-selector-form [selector-content] li[type=department] {font-weight: bold}
+/* --------------------------------------------------------------------- */
+/* ---------------------------- футтер формы --------------------------- */
+/* --------------------------------------------------------------------- */
+#silta-form-user-selector-form [selector-foot] input
+	{
+	border: 1px solid #cdcdcd;
+	-webkit-border-radius: 4px;
+	   -moz-border-radius: 4px;
+	        border-radius: 4px;
+	-webkit-box-shadow: 0px 1px 0px 0px rgba(255,255,255,0.5), inset 0px 1px 2px 0px rgba(0,0,0,0.2);
+	   -moz-box-shadow: 0px 1px 0px 0px rgba(255,255,255,0.5), inset 0px 1px 2px 0px rgba(0,0,0,0.2);
+	        box-shadow: 0px 1px 0px 0px rgba(255,255,255,0.5), inset 0px 1px 2px 0px rgba(0,0,0,0.2);
+	margin:  10px 0;
+	padding: 3px;
+	outline: none;
+	width: 80%;
+	}
+
+#silta-form-user-selector-form [selector-foot] input:focus {background-color: #FAFFBD}
+#silta-form-user-selector-form [selector-foot] [company-logo]
+	{
+	background: url(images/company_logo.png) center right no-repeat;
+	background-size: 50px;
+	float: right;
+	width:  50px;
+	height: 50px;
+	}
+
+#silta-form-user-selector-form [selector-foot] [search-item]:hover {text-decoration: underline;cursor: pointer}
+/* --------------------------------------------------------------------- */
+/* ------------------------ кнопка вызова формы ------------------------ */
+/* --------------------------------------------------------------------- */
+.silta-form-user-selector-call-button
+	{
+	background-image: -webkit-linear-gradient(top, #f9f9f9 0%, #e6e6e6 100%);
+	background-image:    -moz-linear-gradient(top, #f9f9f9 0%, #e6e6e6 100%);
+	background-image:     -ms-linear-gradient(top, #f9f9f9 0%, #e6e6e6 100%);
+	background-image:      -o-linear-gradient(top, #f9f9f9 0%, #e6e6e6 100%);
+	background-image:         linear-gradient(top, #f9f9f9 0%, #e6e6e6 100%);
+	border: solid 1px #bfb9b9;
+	-webkit-box-shadow: 0px 0px 2px #bababa, inset 0px 0px 1px #FFF;
+	   -moz-box-shadow: 0px 0px 2px #bababa, inset 0px 0px 1px #FFF;
+	        box-shadow: 0px 0px 2px #bababa, inset 0px 0px 1px #FFF;
+	-webkit-border-radius: 4px;
+	   -moz-border-radius: 4px;
+	        border-radius: 4px;
+	color: #666;
+	cursor: pointer;
+	display: inline-block;
+	font-weight: bold;
+	margin:  2px;
+	padding: 6px 10px;
+	text-align: center;
+	text-decoration: none;
+	white-space: nowrap;
+	}
+.silta-form-user-selector-call-button:hover        {background: #f9f9f9}
+.silta-form-user-selector-call-button[alert-input] {border-color: #ff0000 !important}
+
+.silta-form-user-selector-call-button [icon]
+	{
+	background: url(images/call_button_icon.png) no-repeat;
+	background-size: 20px;
+	display: inline-block;
+	margin: 0 0 -5px 5px;
+	width:  20px;
+	height: 20px;
+	}
+/* --------------------------------------------------------------------- */
+/* ---------------------- кнопка удаление элемента --------------------- */
+/* --------------------------------------------------------------------- */
+[silta-form-user-selector-checked-element] [delete-element]
+	{
+	background: url(images/remove_element.png) no-repeat;
+	background-size: 20px;
+	cursor: pointer;
+	width:  20px;
+	height: 20px;
+	}
+/* --------------------------------------------------------------------- */
+/* ------------------------------- цвета ------------------------------- */
+/* --------------------------------------------------------------------- */
+#silta-form-user-selector-form [selector-hat] th,
+#silta-form-user-selector-form li[type=user][checked],
+#silta-form-user-selector-form [selector-foot] [search-item]      {color: #255F93}
+#silta-form-user-selector-form li[type=department]:not([checked]) {color: #999}
+#silta-form-user-selector-form [type=department][checked]         {color: #E3972C}

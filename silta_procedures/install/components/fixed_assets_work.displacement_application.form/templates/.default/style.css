@@ -1,0 +1,84 @@
+/* --------------------------------------------------------------------- */
+/* ------------------------------ очистка ------------------------------ */
+/* --------------------------------------------------------------------- */
+.sp-faw-displacement-application-form *              {font-family: Verdana, Arial, helvetica, sans-serif;font-size: 12px}
+.sp-faw-displacement-application-form th,
+.sp-faw-displacement-application-form td,
+.sp-faw-displacement-application-form > h3,          {border: none;color: #333;padding: 0;margin: 0}
+.sp-faw-displacement-application-form > form > table {border-collapse: collapse}
+/* -------------------------------------------------------------------- */
+/* ------------------------ "страничный лист" ------------------------- */
+/* -------------------------------------------------------------------- */
+.sp-faw-displacement-application-form
+	{
+	background: #FFF;
+	-webkit-border-radius: 4px;
+	   -moz-border-radius: 4px;
+	        border-radius: 4px;
+	-webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+	   -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+	        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+	margin-bottom: 50px;
+	padding: 3px 5px;
+	position: relative;
+	}
+
+.sp-faw-displacement-application-form:before,
+.sp-faw-displacement-application-form:after
+	{
+	bottom: 15px;
+	left:   10px;
+	content: "";
+	-webkit-box-shadow: 0 15px 10px rgba(0, 0, 0, 0.7);
+	   -moz-box-shadow: 0 15px 10px rgba(0, 0, 0, 0.7);
+	        box-shadow: 0 15px 10px rgba(0, 0, 0, 0.7);
+	position: absolute;
+	-webkit-transform: rotate(-3deg);
+	   -moz-transform: rotate(-3deg);
+	    -ms-transform: rotate(-3deg);
+	     -o-transform: rotate(-3deg);
+	        transform: rotate(-3deg);
+	width:  50%;
+	height: 20%;
+	max-width: 300px;
+	z-index: -2;
+	}
+ 
+.sp-faw-displacement-application-form:after
+	{
+	left: auto;
+	right: 10px;
+	-webkit-transform: rotate(3deg);
+	   -moz-transform: rotate(3deg);
+	    -ms-transform: rotate(3deg);
+	     -o-transform: rotate(3deg);
+	        transform: rotate(3deg);
+	}
+/* -------------------------------------------------------------------- */
+/* ------------------------------ контент ----------------------------- */
+/* -------------------------------------------------------------------- */
+.sp-faw-displacement-application-form > form > table                       {width: 100%}
+.sp-faw-displacement-application-form:not([new-element]) [form-type=write] {display: none}
+.sp-faw-displacement-application-form > h3
+	{
+	border-bottom: 1px solid #efefef;
+	font-size: 110%;
+	margin: 0 auto 10px auto;
+	padding: 5px 0;
+	text-align: center;
+	width: 90%;
+	}
+.sp-faw-displacement-application-form > h3:not(:first-of-type) {border-top: 1px solid #efefef}
+/* -------------------------------------------------------------------- */
+/* ------------------------ процедура закрыта ------------------------- */
+/* -------------------------------------------------------------------- */
+.sp-faw-displacement-application-form [alert-text]
+	{
+	color: #ff0000;
+	font-size: 90%;
+	font-style: italic;
+	font-weight: bold;
+	text-align: center;
+	}
+
+.sp-faw-displacement-application-form[procedure-closed] *:not(a) {color: #777 !important}

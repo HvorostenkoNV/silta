@@ -1,0 +1,28 @@
+#silta-diy-module-element-comment-form *       {font-family: Verdana, Arial, helvetica, sans-serif;font-size: 12px}
+#silta-diy-module-element-comment-form > table {border-collapse: collapse}
+#silta-diy-module-element-comment-form th,
+#silta-diy-module-element-comment-form td      {border: none;margin: 0;padding: 0}
+
+#silta-diy-module-element-comment-form
+	{
+	background: #F7F7F7;
+	display: none;
+	padding: 3px;
+	position: absolute;
+	-webkit-border-radius: 5px;
+	   -moz-border-radius: 5px;
+	        border-radius: 5px;
+	-webkit-box-shadow: -5px 10px 15px 0px rgba(0,0,0,0.35);
+	   -moz-box-shadow: -5px 10px 15px 0px rgba(0,0,0,0.35);
+	        box-shadow: -5px 10px 15px 0px rgba(0,0,0,0.35);
+	width: auto;
+	z-index: 500;
+	}
+
+#silta-diy-module-element-comment-form [buttons-cell] {padding-top: 5px}
+#silta-diy-module-element-comment-form [form-title]
+	{
+	color: #777;
+	cursor: move;
+	padding-bottom: 5px;
+	}
