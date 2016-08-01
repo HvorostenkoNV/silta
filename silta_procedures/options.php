@@ -94,12 +94,12 @@ if(isset($_POST[$submitButtonName]))
 			<td valign="top"><?=GetMessage("SP_SETTINGS_BUSINESS_TRIP_RESPONSIBLES")?>:</td>
 			<td>
 				<?foreach($BusinessTrip->GetResponsibles() as $departmentId => $userId):?>
-				<?=SFMSFSelect('business_trip[responsibles][department]', $departmentsList, $departmentId)?>
+				<?=SFMSFSelect('business_trip[responsibles][department][]', $departmentsList, $departmentId)?>
 				<input type="text" name="business_trip[responsibles][user][]" value="<?=$userId?>" placeholder="<?=GetMessage("SP_SETTINGS_BUSINESS_TRIP_RESPONSIBLE_PLACEHOLDER")?>">
 				<br>
 				<?endforeach?>
 				<?for($i = 1;$i <= 3;$i++):?>
-				<?=SFMSFSelect('business_trip[responsibles][department]', $departmentsList)?>
+				<?=SFMSFSelect('business_trip[responsibles][department][]', $departmentsList)?>
 				<input type="text" name="business_trip[responsibles][user][]" placeholder="<?=GetMessage("SP_SETTINGS_BUSINESS_TRIP_RESPONSIBLE_PLACEHOLDER")?>">
 				<br>
 				<?endfor?>

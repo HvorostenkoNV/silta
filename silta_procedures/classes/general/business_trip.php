@@ -2,7 +2,10 @@
 IncludeModuleLangFile(__FILE__);
 final class SProceduresBusinessTrip extends SCompanyProcedures
 	{
-	protected $procedureCode = 'business_trip'; // сим.код процедуры
+	protected
+		$procedureCode          = 'business_trip', // сим.код процедуры
+		$subordinateDepartments = [],              // подразделения, которыми руководит пользователь
+		$assistDepartments      = [];              // подразделения, которые администрирует пользователь
 	/* ----------------------------------------------------------------- */
 	/* -------------------- массив инфы по таблицам -------------------- */
 	/* ----------------------------------------------------------------- */
@@ -30,6 +33,45 @@ final class SProceduresBusinessTrip extends SCompanyProcedures
 			if($this->GetProcedureOptions()["responsibles"]["user"][$index])
 				$RESULT[$value] = $this->GetProcedureOptions()["responsibles"]["user"][$index];
 		return $RESULT;
+		}
+	/* ----------------------------------------------------------------- */
+	/* ------------------- подчиненные подразделения ------------------- */
+	/* ----------------------------------------------------------------- */
+	public function GetSubordinateDepartments()
+		{
+		if($this->subordinateDepartments[0]) return $this->subordinateDepartments;
+
+		$userList = CUser::GetList($by = "ID", $order = "asc" , ["ID" => CUser::GetID()], ["FIELDS" => ["ID"], "SELECT" => ["UF_DEPARTMENT"]]);
+		while($user = $userList->GetNext())
+			foreach($user["UF_DEPARTMENT"] as $departmentId)
+				{
+				$departmentObject = new SCompanyDepartment(["id" => $departmentId]);
+				if($departmentObject->GetBoss() == CUser::GetID())
+					{
+					$this->subordinateDepartments[] = $departmentObject->GetId();
+					foreach($departmentObject->GetDepartments() as $childDepartmentId)
+						$this->subordinateDepartments[] = $childDepartmentId;
+					}
+				}
+
+		return $this->subordinateDepartments;
+		}
+	/* ----------------------------------------------------------------- */
+	/* ----------------- администрируемые подразделения ---------------- */
+	/* ----------------------------------------------------------------- */
+	public function GetAssistDepartments()
+		{
+		if($this->assistDepartments[0]) return $this->assistDepartments;
+
+		foreach($this->GetResponsibles() as $departmentId => $userId)
+			{
+			$departmentObject = new SCompanyDepartment(["id" => $departmentId]);
+			$this->assistDepartments[] = $departmentObject->GetId();
+			foreach($departmentObject->GetDepartments() as $childDepartmentId)
+				$this->assistDepartments[] = $childDepartmentId;
+			}
+
+		return $this->assistDepartments;
 		}
 	}
 ?>

@@ -1,0 +1,10 @@
+#sp-btr-element-page                   {width: 100%}
+#sp-btr-element-page > tbody > tr > td {vertical-align: top}
+#sp-btr-element-page [background-cell] div
+	{
+	background: url(images/application_bg.png) center center no-repeat;
+	background-size: 600px;
+	margin: auto;
+	width:  600px;
+	height: 600px;
+	}
