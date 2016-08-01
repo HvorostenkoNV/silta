@@ -41,8 +41,10 @@ class SDiyModuleTableSales extends SIBlockTable
 
 		$this->GetProperty("diy_shop")->SetAttributes(["available_value" => $DiyModule->GetTable("shops")->GetQuery()]);
 		/* ----------------------------------------- */
-		/* ------- определение типов доступа ------- */
+		/* ---------------- доступ ----------------- */
 		/* ----------------------------------------- */
+		if(CUser::IsAdmin()) return;
+		// виды настроек доступа
 		$accessTypes =
 			[
 			"sales_access_full"   => false,
@@ -63,11 +65,11 @@ class SDiyModuleTableSales extends SIBlockTable
 			}
 		$tableQueryAccess = false;
 		if($accessTypes["sales_access_full"]) $tableQueryAccess = 'full';
-		/* ----------------------------------------- */
-		/* ---------- настройка доступов ----------- */
-		/* ----------------------------------------- */
 		if(!$tableQueryAccess) return $this->SetError(str_replace('#TABLE_NAME#', $DiyModule->GetTablesInfo()["sales"]["title"], GetMessage("SF_TABLE_NO_ACCESS")));
-		if($tableQueryAccess == 'full')          $this->SetQueryAccess(["diy_shop" => $DiyModule->GetTable("shops")->GetQuery()]);
+		// фильтр доступа
+		if($tableQueryAccess == 'full')
+			$this->SetQueryAccess(["diy_shop" => $DiyModule->GetTable("shops")->GetQuery()]);
+		// доступ на виды операций
 		if(!$accessTypes["sales_access_write"])  $this->SetAccess("edit_element",   false);
 		if(!$accessTypes["sales_access_create"]) $this->SetAccess("create_element", false);
 		if(!$accessTypes["sales_access_delete"]) $this->SetAccess("delete_element", false);

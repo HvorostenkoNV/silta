@@ -34,8 +34,10 @@ class SDiyModuleTableShops extends SIBlockTable
 			->ChangeType("user")
 			->SetAttributes(["available_value" => $availableValue]);
 		/* ----------------------------------------- */
-		/* ------- определение типов доступа ------- */
+		/* ---------------- доступ ----------------- */
 		/* ----------------------------------------- */
+		if(CUser::IsAdmin()) return;
+		// виды настроек доступа
 		$accessTypes =
 			[
 			"shops_access_by_user" => false,
@@ -44,6 +46,7 @@ class SDiyModuleTableShops extends SIBlockTable
 			"shops_access_create"  => false,
 			"shops_access_delete"  => false
 			];
+		// опр-е видов доступа
 		foreach($accessTypes as $moduleOption => $value)
 			{
 			foreach($DiyModule->GetModuleOption($moduleOption)["module_access"] as $accessType)
@@ -58,24 +61,22 @@ class SDiyModuleTableShops extends SIBlockTable
 		$tableQueryAccess = false;
 		if($accessTypes["shops_access_by_user"]) $tableQueryAccess = 'by_user';
 		if($accessTypes["shops_access_full"])    $tableQueryAccess = 'full';
-		/* ----------------------------------------- */
-		/* ------------ фильтр доступа ------------- */
-		/* ----------------------------------------- */
+		if(!$tableQueryAccess) return $this->SetError(str_replace('#TABLE_NAME#', $DiyModule->GetTablesInfo()["shops"]["title"], GetMessage("SF_TABLE_NO_ACCESS")));
+		// фильтр доступа
 		if($tableQueryAccess == 'by_user')
 			{
+			$tableFilter = [];
 			if(!$DiyModule->GetAccess("diy_boss"))
 				$tableFilter = ["user" => CUser::GetID(), "active" => 'Y'];
 			else
 				foreach($DiyModule->GetUserDepartments() as $departmentId)
 					if(in_array($departmentId, $DiyModule->GetDiyDepartments()))
 						$tableFilter["user"][] = 'department|'.$departmentId;
-			if(!$tableFilter) $tableQueryAccess = false;
+
+			if(!count($tableFilter)) return $this->SetError(str_replace('#TABLE_NAME#', $DiyModule->GetTablesInfo()["shops"]["title"], GetMessage("SF_TABLE_NO_ACCESS")));
+			$this->SetQueryAccess($tableFilter);
 			}
-		/* ----------------------------------------- */
-		/* ---------- настройка доступов ----------- */
-		/* ----------------------------------------- */
-		if(!$tableQueryAccess) return $this->SetError(str_replace('#TABLE_NAME#', $DiyModule->GetTablesInfo()["shops"]["title"], GetMessage("SF_TABLE_NO_ACCESS")));
-		if($tableQueryAccess == 'by_user')       $this->SetQueryAccess($tableFilter);
+		// доступ на виды операций
 		if(!$accessTypes["shops_access_write"])  $this->SetAccess("edit_element",   false);
 		if(!$accessTypes["shops_access_create"]) $this->SetAccess("create_element", false);
 		if(!$accessTypes["shops_access_delete"]) $this->SetAccess("delete_element", false);

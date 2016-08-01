@@ -39,8 +39,10 @@ class SDiyModuleTableShopContacts extends SIBlockTable
 		$this->GetProperty("phone")->ChangeType("phone");
 		$this->GetProperty("diy_shops")->SetAttributes(["available_value" => $DiyModule->GetTable("shops")->GetQuery()]);
 		/* ----------------------------------------- */
-		/* ------- определение типов доступа ------- */
+		/* ---------------- доступ ----------------- */
 		/* ----------------------------------------- */
+		if(CUser::IsAdmin()) return;
+		// виды настроек доступа
 		$accessTypes =
 			[
 			"shop_contacts_access_by_user" => false,
@@ -49,6 +51,7 @@ class SDiyModuleTableShopContacts extends SIBlockTable
 			"shop_contacts_access_create"  => false,
 			"shop_contacts_access_delete"  => false
 			];
+		// опр-е видов доступа
 		foreach($accessTypes as $moduleOption => $value)
 			{
 			foreach($DiyModule->GetModuleOption($moduleOption)["module_access"] as $accessType)
@@ -63,27 +66,24 @@ class SDiyModuleTableShopContacts extends SIBlockTable
 		$tableQueryAccess = false;
 		if($accessTypes["shop_contacts_access_by_user"]) $tableQueryAccess = 'by_user';
 		if($accessTypes["shop_contacts_access_full"])    $tableQueryAccess = 'full';
-		/* ----------------------------------------- */
-		/* ------------ фильтр доступа ------------- */
-		/* ----------------------------------------- */
+		if(!$tableQueryAccess) return $this->SetError(str_replace('#TABLE_NAME#', $DiyModule->GetTablesInfo()["shop_contacts"]["title"], GetMessage("SF_TABLE_NO_ACCESS")));
+		// фильтр доступа
 		if($tableQueryAccess == 'by_user')
 			{
+			$tableFilter = [];
 			if(!$DiyModule->GetAccess("diy_boss"))
 				$tableFilter = ["user" => CUser::GetID()];
 			else
 				foreach($DiyModule->GetUserDepartments() as $departmentId)
 					if(in_array($departmentId, $DiyModule->GetDiyDepartments()))
 						$tableFilter["user"][] = 'department|'.$departmentId;
-			if(!$tableFilter) $tableQueryAccess = false;
+
+			if(!count($tableFilter)) return $this->SetError(str_replace('#TABLE_NAME#', $DiyModule->GetTablesInfo()["shop_contacts"]["title"], GetMessage("SF_TABLE_NO_ACCESS")));
+			$this->SetQueryAccess(array_merge($tableFilter, ["diy_shops" => $DiyModule->GetTable("shops")->GetQuery()]));
 			}
-		if(in_array($tableQueryAccess, ["by_user", "full"]) && $tableFilter)
-			$tableFilter["diy_shops"] = $DiyModule->GetTable("shops")->GetQuery();
-		/* ----------------------------------------- */
-		/* ---------- настройка доступов ----------- */
-		/* ----------------------------------------- */
-		if(!$tableQueryAccess) return $this->SetError(str_replace('#TABLE_NAME#', $DiyModule->GetTablesInfo()["shop_contacts"]["title"], GetMessage("SF_TABLE_NO_ACCESS")));
-		if($tableQueryAccess == 'by_user')               $this->SetQueryAccess($tableFilter);
-		if($tableQueryAccess == 'full' && $tableFilter)  $this->SetQueryAccess($tableFilter);
+		if($tableQueryAccess == 'full')
+			$this->SetQueryAccess(["diy_shops" => $DiyModule->GetTable("shops")->GetQuery()]);
+		// доступ на виды операций
 		if(!$accessTypes["shop_contacts_access_write"])  $this->SetAccess("edit_element",   false);
 		if(!$accessTypes["shop_contacts_access_create"]) $this->SetAccess("create_element", false);
 		if(!$accessTypes["shop_contacts_access_delete"]) $this->SetAccess("delete_element", false);
