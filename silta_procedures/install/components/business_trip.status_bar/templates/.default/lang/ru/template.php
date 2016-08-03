@@ -1,4 +1,4 @@
 <?
-$MESS["SP_FAW_PROV_APPLC_STATUS_DESC_AGREEMENT"]   = 'согласование со всеми вышестоящими руководителями';
-$MESS["SP_FAW_PROV_APPLC_STATUS_DESC_RESPONSIBLE"] = 'обработка заявки ответственными лицами';
+$MESS["SP_BTR_STATUS_DESC_BOSS_CONFIRM"]    = 'согласование с руководителем автора заявки';
+$MESS["SP_BTR_STATUS_DESC_MANAGER_CONFIRM"] = 'заявка обрабатывается ответственным менеджером';
 ?>

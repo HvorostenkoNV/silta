@@ -12,7 +12,7 @@ STAGE_DESCRIPTION - об.текст стадий
 /* -------------------------------------------------------------------- */
 $procedureElement = $arParams["ELEMENT_OBJECT"];
 if(!$procedureElement->GetProperty("stage")->GetValue())
-	$procedureElement->GetProperty("stage")->SetValue("start");
+	$procedureElement->GetProperty("stage")->SetValue("creating");
 /* -------------------------------------------------------------------- */
 /* -------------------- готовый массив для шаблона -------------------- */
 /* -------------------------------------------------------------------- */
@@ -24,16 +24,11 @@ foreach($procedureElement->GetProperty("stage")->GetAttributes()["list"] as $typ
 		"title" => $listInfo["title"],
 		"type"  => $type
 		];
-	if($type == $procedureElement->GetProperty("stage")->GetValue()) $infoArray["checked"] = true;
-	if($type == 'responsible')                                       $infoArray["responsibles"] = $procedureElement->GetResponsibles();
-	if($type == 'agreement')
-		foreach($procedureElement->GetBosses() as $userId)
-			{
-			$value = false;
-			if(in_array($userId, $procedureElement->GetProperty("user_signed")->GetValue())) $value = 'signed';
-			if($userId == $procedureElement->GetCurrentAgreementUser())                      $value = 'active';
-			$infoArray["sign_users"][$userId] = $value;
-			}
+
+	if($type == $procedureElement->GetProperty("stage")->GetValue()) $infoArray["checked"]    = true;
+	if($type == 'boss_confirm')                                      $infoArray["boss_id"]    = $procedureElement->GetSignBoss();
+	if($type == 'manager_confirm')                                   $infoArray["manager_id"] = $procedureElement->GetAssistUser();
+
 	$statusArray[] = $infoArray;
 	}
 // об.текст стадий

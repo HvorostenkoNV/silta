@@ -1,15 +1,15 @@
 /* --------------------------------------------------------------------- */
 /* ------------------------------ очистка ------------------------------ */
 /* --------------------------------------------------------------------- */
-.sp-faw-provision-application-form *              {font-family: Verdana, Arial, helvetica, sans-serif;font-size: 12px}
-.sp-faw-provision-application-form th,
-.sp-faw-provision-application-form td,
-.sp-faw-provision-application-form > h3,          {border: none;color: #333;padding: 0;margin: 0}
-.sp-faw-provision-application-form > form > table {border-collapse: collapse}
+.sp-btr-form *              {font-family: Verdana, Arial, helvetica, sans-serif;font-size: 12px}
+.sp-btr-form th,
+.sp-btr-form td,
+.sp-btr-form > h3,          {border: none;color: #333;padding: 0;margin: 0}
+.sp-btr-form > form > table {border-collapse: collapse}
 /* -------------------------------------------------------------------- */
 /* ------------------------ "страничный лист" ------------------------- */
 /* -------------------------------------------------------------------- */
-.sp-faw-provision-application-form
+.sp-btr-form
 	{
 	background: #FFF;
 	-webkit-border-radius: 4px;
@@ -23,8 +23,8 @@
 	position: relative;
 	}
 
-.sp-faw-provision-application-form:before,
-.sp-faw-provision-application-form:after
+.sp-btr-form:before,
+.sp-btr-form:after
 	{
 	bottom: 15px;
 	left:   10px;
@@ -44,7 +44,7 @@
 	z-index: -2;
 	}
  
-.sp-faw-provision-application-form:after
+.sp-btr-form:after
 	{
 	left: auto;
 	right: 10px;
@@ -57,9 +57,9 @@
 /* -------------------------------------------------------------------- */
 /* ------------------------------ контент ----------------------------- */
 /* -------------------------------------------------------------------- */
-.sp-faw-provision-application-form > form > table                       {width: 100%}
-.sp-faw-provision-application-form:not([new-element]) [form-type=write] {display: none}
-.sp-faw-provision-application-form > h3
+.sp-btr-form > form > table                       {width: 100%}
+.sp-btr-form:not([new-element]) [form-type=write] {display: none}
+.sp-btr-form > h3
 	{
 	border-bottom: 1px solid #efefef;
 	font-size: 110%;
@@ -68,16 +68,16 @@
 	text-align: center;
 	width: 90%;
 	}
-.sp-faw-provision-application-form > h3:not(:first-of-type) {border-top: 1px solid #efefef}
+.sp-btr-form > h3:not(:first-of-type) {border-top: 1px solid #efefef}
 /* -------------------------------------------------------------------- */
 /* ------------------------- таблица комментов ------------------------ */
 /* -------------------------------------------------------------------- */
-.sp-faw-provision-application-form [comments-table]                {height: 200px;margin: 0 20px 20px 20px;overflow-y: scroll}
-.sp-faw-provision-application-form [comments-table] [title-row] th {text-align: left}
+.sp-btr-form [comments-table]                {height: 200px;margin: 0 20px 20px 20px;overflow-y: scroll}
+.sp-btr-form [comments-table] [title-row] th {text-align: left}
 /* -------------------------------------------------------------------- */
 /* ------------------------ процедура закрыта ------------------------- */
 /* -------------------------------------------------------------------- */
-.sp-faw-provision-application-form [alert-text]
+.sp-btr-form [alert-text]
 	{
 	color: #ff0000;
 	font-size: 90%;
@@ -86,4 +86,4 @@
 	text-align: center;
 	}
 
-.sp-faw-provision-application-form[procedure-closed] *:not(a) {color: #777 !important}
+.sp-btr-form[procedure-closed] *:not(a) {color: #777 !important}

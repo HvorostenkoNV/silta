@@ -3,8 +3,8 @@ $(function()
 	$('body').on
 		(
 		'click',
-			'.sp-faw-provision-application-form [edit-button],'+
-			'.sp-faw-provision-application-form [cancel-button]',
+			'sp-btr-form [edit-button],'+
+			'sp-btr-form [cancel-button]',
 		function()
 		{
 		var
