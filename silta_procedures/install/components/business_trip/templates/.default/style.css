@@ -3,8 +3,8 @@
 #sp-btr-element-page [background-cell] div
 	{
 	background: url(images/application_bg.png) center center no-repeat;
-	background-size: 600px;
+	background-size: 400px;
 	margin: auto;
-	width:  600px;
-	height: 600px;
+	width:  400px;
+	height: 400px;
 	}
