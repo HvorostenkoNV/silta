@@ -3,8 +3,9 @@ IncludeModuleLangFile(__FILE__);
 class SProceduresBusinessTripElement extends SIBlockElement
 	{
 	protected
-		$signBoss   = '',
-		$assistUser = '';
+		$signBoss         = '',
+		$assistUser       = '',
+		$departmentObject = false;
 	/* ----------------------------------------------------------------- */
 	/* ------------------------- уровеь доступа ------------------------ */
 	/* ----------------------------------------------------------------- */
@@ -50,13 +51,22 @@ class SProceduresBusinessTripElement extends SIBlockElement
 				$this->GetProperty($property)->SetAccess("write", true);
 		}
 	/* ----------------------------------------------------------------- */
+	/* ---------------------- объект подразделения --------------------- */
+	/* ----------------------------------------------------------------- */
+	protected function GetDepartmentObject()
+		{
+		if(!$this->departmentObject && $this->GetElementId() != 'new') $this->departmentObject = new SCompanyDepartment(["id" => $this->GetProperty("user_department")->GetValue()]);
+		return $this->departmentObject;
+		}
+	/* ----------------------------------------------------------------- */
 	/* ----------------- получить рук-теля-подписанта ------------------ */
 	/* ----------------------------------------------------------------- */
 	final public function GetSignBoss()
 		{
-		if($this->signBoss) return $this->signBoss;
+		if($this->GetElementId() == 'new') return false;
+		if($this->signBoss)                return $this->signBoss;
 
-		$departmentObject = new SCompanyDepartment(["id" => $this->GetProperty("user_department")->GetValue()]);
+		$departmentObject = $this->GetDepartmentObject();
 		while(!$this->signBoss && $departmentObject)
 			{
 			$this->signBoss = $departmentObject->GetBoss();
@@ -70,13 +80,14 @@ class SProceduresBusinessTripElement extends SIBlockElement
 	/* ----------------------------------------------------------------- */
 	final public function GetAssistUser()
 		{
-		if($this->assistUser) return $this->assistUser;
+		if($this->GetElementId() == 'new') return false;
+		if($this->assistUser)              return $this->assistUser;
 
-		$departmentObject = new SCompanyDepartment(["id" => $this->GetProperty("user_department")->GetValue()]);
-		while(!$this->signBoss && $departmentObject)
+		$departmentObject = $this->GetDepartmentObject();
+		while(!$this->assistUser && $departmentObject)
 			{
-			$this->signBoss = $departmentObject->GetBoss();
-			if(!$this->signBoss) $departmentObject = $departmentObject->GetParent();
+			$this->assistUser = SProceduresBusinessTrip::GetInstance()->GetResponsibles()[$departmentObject->GetId()];
+			if(!$this->assistUser) $departmentObject = $departmentObject->GetParent();
 			}
 
 		return $this->assistUser;
