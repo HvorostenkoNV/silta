@@ -76,7 +76,8 @@ final class SCompanyDepartment
 			false, ["ID", "IBLOCK_SECTION_ID", "NAME", "CODE"], false
 			);
 		while($section = $sectionList->GetNext())
-			$this->departmentParent = new self(["id" => $section["IBLOCK_SECTION_ID"]]);
+			if($section["IBLOCK_SECTION_ID"])
+				$this->departmentParent = new self(["id" => $section["IBLOCK_SECTION_ID"]]);
 
 		return $this->departmentParent;
 		}

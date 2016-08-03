@@ -1,80 +1,85 @@
 <?
 IncludeModuleLangFile(__FILE__);
-class SProceduresBusinessTripTable extends SIBlockElement
+class SProceduresBusinessTripElement extends SIBlockElement
 	{
+	protected
+		$signBoss   = '',
+		$assistUser = '';
 	/* ----------------------------------------------------------------- */
 	/* ------------------------- уровеь доступа ------------------------ */
 	/* ----------------------------------------------------------------- */
 	protected function AccessCalculating()
 		{
 		if($this->GetElementId() == 'new') return;
-		/*
 		// полностью закрытый доступ к элементу/свойствам
 		foreach($this->GetPropertyList() as $propertyObject) $propertyObject->SetAccess("write", false);
 		foreach(["write", "delete"] as $type)                $this          ->SetAccess($type,   false);
 		if($this->GetProperty("active")->GetValue() == 'N')  return;
+		// группы свойств
+		$propsGroups =
+			[
+			"author"            => ["trip_start_date", "trip_end_date", "trip_description", "path_description", "wishes_description", "hotel_need", "hotel_start_date", "hotel_end_date"],
+			"responsible"       => ["trip_day_cost", "hotel_day_cost", "hotel_comments", "trip_files", "ticket_name", "ticket_date", "ticket_cost"],
+			"required_to_write" => ["active", "stage", "returned", "returned_text", "returned_files"]
+			];
 		// админ
 		if(CUser::IsAdmin())
 			{
-			foreach(["write", "delete"] as $type)     $this->SetAccess($type, true);
-			foreach(["text",  "files"]  as $property) $this->GetProperty($property)->SetAccess("write", true);
+			foreach(["write", "delete"]         as $type)     $this->SetAccess($type, true);
+			foreach($propsGroups["author"]      as $property) $this->GetProperty($property)->SetAccess("write", true);
+			foreach($propsGroups["responsible"] as $property) $this->GetProperty($property)->SetAccess("write", true);
 			}
 		// создание заявки
-		if($this->GetProperty("stage")->GetValue() == 'start' && $this->GetProperty("created_by")->GetValue() == CUser::GetID())
+		if($this->GetProperty("stage")->GetValue() == 'creating' && $this->GetProperty("created_by")->GetValue() == CUser::GetID())
 			{
-			foreach(["write", "delete"] as $type)     $this->SetAccess($type, true);
-			foreach(["text",  "files"]  as $property) $this->GetProperty($property)->SetAccess("write", true);
+			foreach(["write", "delete"]    as $type)     $this->SetAccess($type, true);
+			foreach($propsGroups["author"] as $property) $this->GetProperty($property)->SetAccess("write", true);
 			}
 		// согласование с руководством
-		if(CUser::GetID() == $this->GetCurrentAgreementUser())
+		if($this->GetProperty("stage")->GetValue() == 'boss_confirm' && CUser::GetID() == $this->GetSignBoss())
 			$this->SetAccess("write", true);
-		// участие ответственных лиц по обеспечению
-		if($procedureStage == 'responsible' && in_array(CUser::IsAdmin(), $this->GetResponsibles()))
+		// участие ответственного
+		if($this->GetProperty("stage")->GetValue() == 'manager_confirm' && CUser::IsAdmin() == $this->GetAssistUser())
+			{
 			$this->SetAccess("write", true);
+			foreach($propsGroups["responsible"] as $property) $this->GetProperty($property)->SetAccess("write", true);
+			}
 		// обязательные свойства, открытые на запись
 		if($this->GetAccess("write"))
-			foreach(["active", "user_signed", "stage"] as $property)
+			foreach($propsGroups["required_to_write"] as $property)
 				$this->GetProperty($property)->SetAccess("write", true);
-		*/
 		}
 	/* ----------------------------------------------------------------- */
 	/* ----------------- получить рук-теля-подписанта ------------------ */
 	/* ----------------------------------------------------------------- */
 	final public function GetSignBoss()
 		{
-		/*
-		if($this->GetElementId() == 'new') return [];
-		if($this->procedureBosses[0])      return $this->procedureBosses;
+		if($this->signBoss) return $this->signBoss;
 
-		$usersNotSigned = [$this->GetProperty("created_by")->GetValue()];
-		foreach(SProceduresFixedAssetsWork::GetInstance()->GetProcedureOptions()["purchase_responsibles"] as $userId) $usersNotSigned[] = $userId;
-
-		$sectionsQuery = CIBlockSection::GetNavChain(false, $this->GetProperty("department")->GetValue());
-		while($section = $sectionsQuery->GetNext())
+		$departmentObject = new SCompanyDepartment(["id" => $this->GetProperty("user_department")->GetValue()]);
+		while(!$this->signBoss && $departmentObject)
 			{
-			$bossId = (new SCompanyDepartment(["id" => $section["ID"]]))->GetBoss();
-			if($bossId && !in_array($bossId, $usersNotSigned)) $this->procedureBosses[] = $bossId;
+			$this->signBoss = $departmentObject->GetBoss();
+			if(!$this->signBoss) $departmentObject = $departmentObject->GetParent();
 			}
-		$this->procedureBosses = array_reverse($this->procedureBosses);
 
-		return $this->procedureBosses;
-		*/
+		return $this->signBoss;
 		}
 	/* ----------------------------------------------------------------- */
 	/* -------------- получить ответственных по процедуре -------------- */
 	/* ----------------------------------------------------------------- */
 	final public function GetAssistUser()
 		{
-		/*
-		if($this->GetElementId() == 'new')  return [];
-		if($this->procedureResponsibles[0]) return $this->procedureResponsibles;
+		if($this->assistUser) return $this->assistUser;
 
-		$fixedAssetsGroup = $this->GetProperty("fixed_assets_groups")->GetValue();
-		if($fixedAssetsGroup) $FixedAssetsGroupsElement = SCompanyTables::GetInstance()->GetTable("fixed_assets_groups")->GetElement($fixedAssetsGroup);
-		if($FixedAssetsGroupsElement) $this->procedureResponsibles = $FixedAssetsGroupsElement->GetProperty("responsibles")->GetUsersArray();
+		$departmentObject = new SCompanyDepartment(["id" => $this->GetProperty("user_department")->GetValue()]);
+		while(!$this->signBoss && $departmentObject)
+			{
+			$this->signBoss = $departmentObject->GetBoss();
+			if(!$this->signBoss) $departmentObject = $departmentObject->GetParent();
+			}
 
-		return $this->procedureResponsibles;
-		*/
+		return $this->assistUser;
 		}
 	/* ----------------------------------------------------------------- */
 	/* --------------------- отправить уведомление --------------------- */

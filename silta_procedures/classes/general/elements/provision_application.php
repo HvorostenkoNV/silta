@@ -31,7 +31,7 @@ class SProceduresFAWProvisionApplicationElement extends SIBlockElement
 		if(CUser::GetID() == $this->GetCurrentAgreementUser())
 			$this->SetAccess("write", true);
 		// участие ответственных лиц по обеспечению
-		if($procedureStage == 'responsible' && in_array(CUser::IsAdmin(), $this->GetResponsibles()))
+		if($this->GetProperty("stage")->GetValue() == 'responsible' && in_array(CUser::IsAdmin(), $this->GetResponsibles()))
 			$this->SetAccess("write", true);
 		// обязательные свойства, открытые на запись
 		if($this->GetAccess("write"))

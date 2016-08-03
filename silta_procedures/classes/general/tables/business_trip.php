@@ -9,6 +9,7 @@ class SProceduresBusinessTripTable extends SIBlockTable
 		{
 		parent::ConstructObject($params);
 		foreach($this->GetAvailableProps() as $property) $this->SetProperty($property);
+		$BusinessTrip = SProceduresBusinessTrip::GetInstance();
 		/* ----------------------------------------- */
 		/* --- проверка инфоблока на корректность -- */
 		/* ----------------------------------------- */
@@ -40,6 +41,14 @@ class SProceduresBusinessTripTable extends SIBlockTable
 		/* ----------- настройки свойств ----------- */
 		/* ----------------------------------------- */
 		foreach(["hotel_need", "returned"] as $property) $this->GetProperty($property)->ChangeType("boolean");
+		/* ----------------------------------------- */
+		/* ----------- настройки доступа ----------- */
+		/* ----------------------------------------- */
+		if(CUser::IsAdmin() || in_array(CUser::GetId(), $BusinessTrip->GetProcedureOptions()["full_access"])) return;
+
+		$availableDepartments = $BusinessTrip->GetSubordinateDepartments();
+		foreach($BusinessTrip->GetAssistDepartments() as $departmentId) $availableDepartments[] = $departmentId;
+		$this->SetQueryAccess(["user_department" => $availableDepartments]);
 		}
 	}
 ?>
