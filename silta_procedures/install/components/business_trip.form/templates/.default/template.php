@@ -21,19 +21,20 @@
 					<col width="30%"><col width="70%">
 					<tbody>
 						<?
-						foreach($arResult["main_form_props"][$fieldType] as $propertyObject)
-							$APPLICATION->IncludeComponent
-								(
-								"silta_framework:form_elements.property_row", '',
-									[
-									"FIELD_TYPE"      => $fieldType,
-									"PROPERTY_OBJECT" => $propertyObject,
-									"FIELD_PARAMS"    => 
+						foreach(["created_by", "user_department", "trip_start_date", "trip_end_date", "trip_description", "path_description", "wishes_description", "hotel_need", "hotel_start_date", "hotel_end_date"] as $property)
+							if($arResult["main_form_props"][$fieldType][$property])
+								$APPLICATION->IncludeComponent
+									(
+									"silta_framework:form_elements.property_row", '',
 										[
-										"INPUT_NAME" => $arResult["input_name"]["main_form"].'['.$propertyObject->GetName().']'
+										"FIELD_TYPE"      => $fieldType,
+										"PROPERTY_OBJECT" => $arResult["main_form_props"][$fieldType][$property],
+										"FIELD_PARAMS"    => 
+											[
+											"INPUT_NAME" => $arResult["input_name"]["main_form"].'['.$property.']'
+											]
 										]
-									]
-								);
+									);
 						?>
 					</tbody>
 				</table>
@@ -80,7 +81,7 @@
 				);
 			}
 		// кнопка "создать элемент"
-		if(count($arResult["form_props"]["write"]) && $arResult["new_element"])
+		if(count($arResult["main_form_props"]["write"]) && $arResult["new_element"])
 			$APPLICATION->IncludeComponent
 				(
 				"silta_framework:form_elements.button", '',

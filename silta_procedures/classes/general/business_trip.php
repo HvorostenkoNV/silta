@@ -4,6 +4,7 @@ final class SProceduresBusinessTrip extends SCompanyProcedures
 	{
 	protected
 		$procedureCode          = 'business_trip', // сим.код процедуры
+		$userDepartments        = [],              // подразделения пользователя
 		$subordinateDepartments = [],              // подразделения, которыми руководит пользователь
 		$assistDepartments      = [];              // подразделения, которые администрирует пользователь
 	/* ----------------------------------------------------------------- */
@@ -37,23 +38,29 @@ final class SProceduresBusinessTrip extends SCompanyProcedures
 	/* ----------------------------------------------------------------- */
 	/* ------------------- подчиненные подразделения ------------------- */
 	/* ----------------------------------------------------------------- */
+	public function GetUserDepartments()
+		{
+		if($this->userDepartments[0]) return $this->userDepartments;
+		$userList = CUser::GetList($by = "ID", $order = "asc" , ["ID" => CUser::GetID()], ["FIELDS" => ["ID"], "SELECT" => ["UF_DEPARTMENT"]]);
+		while($user = $userList->GetNext()) $this->userDepartments = $user["UF_DEPARTMENT"];
+		return $this->userDepartments;
+		}
+	/* ----------------------------------------------------------------- */
+	/* ------------------- подчиненные подразделения ------------------- */
+	/* ----------------------------------------------------------------- */
 	public function GetSubordinateDepartments()
 		{
 		if($this->subordinateDepartments[0]) return $this->subordinateDepartments;
-
-		$userList = CUser::GetList($by = "ID", $order = "asc" , ["ID" => CUser::GetID()], ["FIELDS" => ["ID"], "SELECT" => ["UF_DEPARTMENT"]]);
-		while($user = $userList->GetNext())
-			foreach($user["UF_DEPARTMENT"] as $departmentId)
+		foreach($this->GetUserDepartments() as $departmentId)
+			{
+			$departmentObject = new SCompanyDepartment(["id" => $departmentId]);
+			if($departmentObject->GetBoss() == CUser::GetID())
 				{
-				$departmentObject = new SCompanyDepartment(["id" => $departmentId]);
-				if($departmentObject->GetBoss() == CUser::GetID())
-					{
-					$this->subordinateDepartments[] = $departmentObject->GetId();
-					foreach($departmentObject->GetDepartments() as $childDepartmentId)
-						$this->subordinateDepartments[] = $childDepartmentId;
-					}
+				$this->subordinateDepartments[] = $departmentObject->GetId();
+				foreach($departmentObject->GetDepartments() as $childDepartmentId)
+					$this->subordinateDepartments[] = $childDepartmentId;
 				}
-
+			}
 		return $this->subordinateDepartments;
 		}
 	/* ----------------------------------------------------------------- */
@@ -62,7 +69,6 @@ final class SProceduresBusinessTrip extends SCompanyProcedures
 	public function GetAssistDepartments()
 		{
 		if($this->assistDepartments[0]) return $this->assistDepartments;
-
 		foreach($this->GetResponsibles() as $departmentId => $userId)
 			{
 			$departmentObject = new SCompanyDepartment(["id" => $departmentId]);
@@ -70,7 +76,6 @@ final class SProceduresBusinessTrip extends SCompanyProcedures
 			foreach($departmentObject->GetDepartments() as $childDepartmentId)
 				$this->assistDepartments[] = $childDepartmentId;
 			}
-
 		return $this->assistDepartments;
 		}
 	}

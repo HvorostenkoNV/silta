@@ -3,8 +3,8 @@ $(function()
 	$('body').on
 		(
 		'click',
-			'sp-btr-form [edit-button],'+
-			'sp-btr-form [cancel-button]',
+			'.sp-btr-form [edit-button],'+
+			'.sp-btr-form [cancel-button]',
 		function()
 		{
 		var

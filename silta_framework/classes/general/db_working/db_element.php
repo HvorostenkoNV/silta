@@ -84,11 +84,13 @@ abstract class SDBElement
 	final public function ChangePropertyType($name = '', $type = '')
 		{
 		if(!$name || !$type) return false;
-		$oldProperty        = $this->GetProperty($name);
-		$propertyObjectName = $this->GetTableObject()->GetPropertyTypes()[$type]["element_property_class"];
-		if(!$oldProperty || !$propertyObjectName) return false;
+		$oldProperty          = $this->GetProperty($name);
+		$propertyClass        = $this->GetTableObject()->GetPropertyTypes()[$type]["property_class"];
+		$elementPropertyClass = $this->GetTableObject()->GetPropertyTypes()[$type]["element_property_class"];
+		if(!$oldProperty || !$propertyClass || !$elementPropertyClass) return false;
 
-		$this->tableProps[$name] = new $propertyObjectName($this, $name, $oldProperty->GetAttributes());
+		$tablePropertyObject     = new $propertyClass($this->GetTableObject(), $name, $oldProperty->GetAttributes());
+		$this->tableProps[$name] = new $elementPropertyClass($this, $name, $tablePropertyObject->GetAttributes());
 		return $this->tableProps[$name];
 		}
 	/* ----------------------------------------------------------------- */

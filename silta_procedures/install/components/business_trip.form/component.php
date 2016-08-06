@@ -75,11 +75,12 @@ $procedureClosed = false;
 if($procedureElement->GetProperty("active")->GetValue() == 'N') $procedureClosed = true;
 // основная форма
 $mainFormProps = ["read" => [], "write" => []];
-foreach(["trip_start_date", "trip_end_date", "trip_description", "path_description", "wishes_description", "hotel_need", "hotel_start_date", "hotel_end_date"] as $property)
+if($procedureElement->GetElementId() != 'new') $mainFormProps["read"]["created_by"] = $procedureElement->GetProperty("created_by");
+foreach(["user_department", "trip_start_date", "trip_end_date", "trip_description", "path_description", "wishes_description", "hotel_need", "hotel_start_date", "hotel_end_date"] as $property)
 	{
 	$propertyObject = $procedureElement->GetProperty($property);
-	if($procedureElement->GetElementId() != 'new')                                   $mainFormProps["read"][]  = $propertyObject;
-	if($procedureElement->GetAccess("write") && $propertyObject->GetAccess("write")) $mainFormProps["write"][] = $propertyObject;
+	if($procedureElement->GetElementId() != 'new')                                   $mainFormProps["read"] [$property] = $propertyObject;
+	if($procedureElement->GetAccess("write") && $propertyObject->GetAccess("write")) $mainFormProps["write"][$property] = $propertyObject;
 	}
 // готовый массив
 $arResult =

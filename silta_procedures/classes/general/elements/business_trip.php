@@ -7,59 +7,72 @@ class SProceduresBusinessTripElement extends SIBlockElement
 		$assistUser       = '',
 		$departmentObject = false;
 	/* ----------------------------------------------------------------- */
-	/* ------------------------- уровеь доступа ------------------------ */
+	/* ------------------------- СѓСЂРѕРІРµСЊ РґРѕСЃС‚СѓРїР° ------------------------ */
 	/* ----------------------------------------------------------------- */
 	protected function AccessCalculating()
 		{
-		if($this->GetElementId() == 'new') return;
-		// полностью закрытый доступ к элементу/свойствам
+		// РЅРѕРІС‹Р№ СЌР»РµРјРµРЅС‚
+		if($this->GetElementId() == 'new')
+			{
+			$departmentsList = [];
+			foreach(SProceduresBusinessTrip::GetInstance()->GetUserDepartments() as $departmentId)
+				$departmentsList[] =
+					[
+					"value" => $departmentId,
+					"code"  => $departmentId,
+					"title" => (new SCompanyDepartment(["id" => $departmentId]))->GetName()
+					];
+			$this->GetProperty("user_department")->ChangeType("list")->SetAttributes(["list" => $departmentsList]);
+			return;
+			}
+		// РїРѕР»РЅРѕСЃС‚СЊСЋ Р·Р°РєСЂС‹С‚С‹Р№ РґРѕСЃС‚СѓРї Рє СЌР»РµРјРµРЅС‚Сѓ/СЃРІРѕР№СЃС‚РІР°Рј
 		foreach($this->GetPropertyList() as $propertyObject) $propertyObject->SetAccess("write", false);
 		foreach(["write", "delete"] as $type)                $this          ->SetAccess($type,   false);
 		if($this->GetProperty("active")->GetValue() == 'N')  return;
-		// группы свойств
+		// РіСЂСѓРїРїС‹ СЃРІРѕР№СЃС‚РІ
 		$propsGroups =
 			[
 			"author"            => ["trip_start_date", "trip_end_date", "trip_description", "path_description", "wishes_description", "hotel_need", "hotel_start_date", "hotel_end_date"],
 			"responsible"       => ["trip_day_cost", "hotel_day_cost", "hotel_comments", "trip_files", "ticket_name", "ticket_date", "ticket_cost"],
 			"required_to_write" => ["active", "stage", "returned", "returned_text", "returned_files"]
 			];
-		// админ
+		// Р°РґРјРёРЅ
 		if(CUser::IsAdmin())
 			{
 			foreach(["write", "delete"]         as $type)     $this->SetAccess($type, true);
 			foreach($propsGroups["author"]      as $property) $this->GetProperty($property)->SetAccess("write", true);
 			foreach($propsGroups["responsible"] as $property) $this->GetProperty($property)->SetAccess("write", true);
 			}
-		// создание заявки
+		// СЃРѕР·РґР°РЅРёРµ Р·Р°СЏРІРєРё
 		if($this->GetProperty("stage")->GetValue() == 'creating' && $this->GetProperty("created_by")->GetValue() == CUser::GetID())
 			{
 			foreach(["write", "delete"]    as $type)     $this->SetAccess($type, true);
 			foreach($propsGroups["author"] as $property) $this->GetProperty($property)->SetAccess("write", true);
 			}
-		// согласование с руководством
+		// СЃРѕРіР»Р°СЃРѕРІР°РЅРёРµ СЃ СЂСѓРєРѕРІРѕРґСЃС‚РІРѕРј
 		if($this->GetProperty("stage")->GetValue() == 'boss_confirm' && CUser::GetID() == $this->GetSignBoss())
 			$this->SetAccess("write", true);
-		// участие ответственного
+		// СѓС‡Р°СЃС‚РёРµ РѕС‚РІРµС‚СЃС‚РІРµРЅРЅРѕРіРѕ
 		if($this->GetProperty("stage")->GetValue() == 'manager_confirm' && CUser::IsAdmin() == $this->GetAssistUser())
 			{
 			$this->SetAccess("write", true);
 			foreach($propsGroups["responsible"] as $property) $this->GetProperty($property)->SetAccess("write", true);
 			}
-		// обязательные свойства, открытые на запись
+		// РѕР±СЏР·Р°С‚РµР»СЊРЅС‹Рµ СЃРІРѕР№СЃС‚РІР°, РѕС‚РєСЂС‹С‚С‹Рµ РЅР° Р·Р°РїРёСЃСЊ
 		if($this->GetAccess("write"))
 			foreach($propsGroups["required_to_write"] as $property)
 				$this->GetProperty($property)->SetAccess("write", true);
 		}
 	/* ----------------------------------------------------------------- */
-	/* ---------------------- объект подразделения --------------------- */
+	/* ---------------------- РѕР±СЉРµРєС‚ РїРѕРґСЂР°Р·РґРµР»РµРЅРёСЏ --------------------- */
 	/* ----------------------------------------------------------------- */
-	protected function GetDepartmentObject()
+	final protected function GetDepartmentObject()
 		{
 		if(!$this->departmentObject && $this->GetElementId() != 'new') $this->departmentObject = new SCompanyDepartment(["id" => $this->GetProperty("user_department")->GetValue()]);
 		return $this->departmentObject;
 		}
 	/* ----------------------------------------------------------------- */
-	/* ----------------- получить рук-теля-подписанта ------------------ */
+	/* ----------------- РїРѕР»СѓС‡РёС‚СЊ СЂСѓРє-С‚РµР»СЏ-РїРѕРґРїРёСЃР°РЅС‚Р° ------------------ */
 	/* ----------------------------------------------------------------- */
 	final public function GetSignBoss()
 		{
@@ -76,7 +89,7 @@ class SProceduresBusinessTripElement extends SIBlockElement
 		return $this->signBoss;
 		}
 	/* ----------------------------------------------------------------- */
-	/* -------------- получить ответственных по процедуре -------------- */
+	/* -------------- РїРѕР»СѓС‡РёС‚СЊ РѕС‚РІРµС‚СЃС‚РІРµРЅРЅС‹С… РїРѕ РїСЂРѕС†РµРґСѓСЂРµ -------------- */
 	/* ----------------------------------------------------------------- */
 	final public function GetAssistUser()
 		{
@@ -93,13 +106,13 @@ class SProceduresBusinessTripElement extends SIBlockElement
 		return $this->assistUser;
 		}
 	/* ----------------------------------------------------------------- */
-	/* --------------------- отправить уведомление --------------------- */
+	/* --------------------- РѕС‚РїСЂР°РІРёС‚СЊ СѓРІРµРґРѕРјР»РµРЅРёРµ --------------------- */
 	/* ----------------------------------------------------------------- */
 	final public function SendAlert($alertType = '')
 		{
 		/*
 		if($this->GetElementId() == 'new' || !$alertType) return;
-		// переменные
+		// РїРµСЂРµРјРµРЅРЅС‹Рµ
 		$senderId        = false;
 		$senderEmail     = [];
 		$getersId        = [];
@@ -107,7 +120,7 @@ class SProceduresBusinessTripElement extends SIBlockElement
 		$alertText       = '';
 		$alertTitle      = '';
 		$applicationLink = 'http://'.$_SERVER["HTTP_HOST"].SProceduresFixedAssetsWork::GetInstance()->GetComponentUrl().'provision_application/'.$this->GetElementId().'/';
-		// типы оповещений
+		// С‚РёРїС‹ РѕРїРѕРІРµС‰РµРЅРёР№
 		if($alertType == 'sign_user_alert')
 			{
 			$alertText  = GetMessage("SP_FAW_PROV_APPLIC_SIGN_USER_ALERT_TEXT");
@@ -145,7 +158,7 @@ class SProceduresBusinessTripElement extends SIBlockElement
 			if($userInfo["ID"] == $senderId)         $senderEmail   = $userInfo["EMAIL"];
 			if(in_array($userInfo["ID"], $getersId)) $getersEmail[] = $userInfo["EMAIL"];
 			}
-		// отправка письма
+		// РѕС‚РїСЂР°РІРєР° РїРёСЃСЊРјР°
 		if($senderEmail && count($getersEmail))
 			CEvent::Send
 				(
@@ -158,7 +171,7 @@ class SProceduresBusinessTripElement extends SIBlockElement
 					"APPLICATION_LINK" => $applicationLink
 					]
 				);
-		// отправка уведомлений
+		// РѕС‚РїСЂР°РІРєР° СѓРІРµРґРѕРјР»РµРЅРёР№
 		foreach($getersId as $userId)
 			CIMNotify::Add
 				([
@@ -173,7 +186,7 @@ class SProceduresBusinessTripElement extends SIBlockElement
 		*/
 		}
 	/* ----------------------------------------------------------------- */
-	/* --------------------- изменить стадию заявки -------------------- */
+	/* --------------------- РёР·РјРµРЅРёС‚СЊ СЃС‚Р°РґРёСЋ Р·Р°СЏРІРєРё -------------------- */
 	/* ----------------------------------------------------------------- */
 	final public function ChangeStage($stage = '')
 		{
