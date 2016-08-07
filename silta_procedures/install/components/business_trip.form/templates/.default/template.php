@@ -21,20 +21,82 @@
 					<col width="30%"><col width="70%">
 					<tbody>
 						<?
-						foreach(["created_by", "user_department", "trip_start_date", "trip_end_date", "trip_description", "path_description", "wishes_description", "hotel_need", "hotel_start_date", "hotel_end_date"] as $property)
+						foreach(["created_by", "user_department", "trip_start_date", "trip_description", "path_description", "wishes_description", "hotel_need", "hotel_start_date"] as $property)
 							if($arResult["main_form_props"][$fieldType][$property])
-								$APPLICATION->IncludeComponent
-									(
-									"silta_framework:form_elements.property_row", '',
-										[
-										"FIELD_TYPE"      => $fieldType,
-										"PROPERTY_OBJECT" => $arResult["main_form_props"][$fieldType][$property],
-										"FIELD_PARAMS"    => 
+								{
+								$propertyObject = $arResult["main_form_props"][$fieldType][$property];
+								// интервалы дат
+								if($property == 'trip_start_date' || $property == 'hotel_start_date')
+									{
+									$rowParams               = [];
+									$startDatePropertyObject = $propertyObject;
+									if($property == 'trip_start_date')  $endDatePropertyObject = $arResult["main_form_props"][$fieldType]["trip_end_date"];
+									if($property == 'hotel_start_date') $endDatePropertyObject = $arResult["main_form_props"][$fieldType]["hotel_end_date"];
+
+									if($property == 'trip_start_date')  $rowParams["TITLE"] = GetMessage("SP_BTR_TRIP_INTERVAL_TITLE");
+									if($property == 'hotel_start_date') $rowParams["TITLE"] = GetMessage("SP_BTR_HOTEL_INTERVAL_TITLE");
+
+									if($property == 'trip_start_date')  $rowParams["NAME"] = 'trip_interval';
+									if($property == 'hotel_start_date') $rowParams["NAME"] = 'hotel_interval';
+
+									if
+										(
+										$startDatePropertyObject->GetAttributes()["required"] == 'on'
+										&&
+										$endDatePropertyObject->GetAttributes()["required"] == 'on'
+										)
+										$rowParams["REQUIRED"] = 'on';
+
+									if
+										(
+										$property == 'hotel_start_date'
+										&&
+										$arResult["main_form_props"][$fieldType]["hotel_need"]
+										&&
+										$arResult["main_form_props"][$fieldType]["hotel_need"]->GetValue() == 'N'
+										)
+										$rowParams["HIDDEN"] = 'Y';
+
+									if($startDatePropertyObject && $endDatePropertyObject)
+										$APPLICATION->IncludeComponent
+											(
+											"silta_framework:form_elements.property_row", '',
+												[
+												"FIELD_TYPE"             => $fieldType,
+												"ROW_PARAMS"             => $rowParams,
+												"FIELD_COMPONENT_NAME"   => 'silta_procedures:business_trip.date_interval_field',
+												"FIELD_COMPONENT_PARAMS" => 
+													[
+													"FIELD_TYPE"       => $fieldType,
+													"PROPERTY_START"   => $startDatePropertyObject,
+													"PROPERTY_END"     => $endDatePropertyObject,
+													"INPUT_NAME_START" => $arResult["input_name"]["main_form"].'['.$startDatePropertyObject->GetName().']',
+													"INPUT_NAME_END"   => $arResult["input_name"]["main_form"].'['.$endDatePropertyObject  ->GetName().']',
+													"ELEMENT_OBJECT"   => $startDatePropertyObject->GetElementObject()
+													]
+												]
+											);
+									}
+								// остальное
+								else
+									{
+									$rowParams   = [];
+									$fieldParams = ["INPUT_NAME" => $arResult["input_name"]["main_form"].'['.$property.']'];
+									if($property == 'user_department') $rowParams["SPACE"] = 'bottom';
+									if($property == 'hotel_need')      $fieldParams["ATTR"] = 'hotel-need-triger';
+
+									$APPLICATION->IncludeComponent
+										(
+										"silta_framework:form_elements.property_row", '',
 											[
-											"INPUT_NAME" => $arResult["input_name"]["main_form"].'['.$property.']'
+											"FIELD_TYPE"      => $fieldType,
+											"PROPERTY_OBJECT" => $propertyObject,
+											"ROW_PARAMS"      => $rowParams,
+											"FIELD_PARAMS"    => $fieldParams
 											]
-										]
-									);
+										);
+									}
+								}
 						?>
 					</tbody>
 				</table>

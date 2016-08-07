@@ -13,11 +13,13 @@ FIELD_COMPONENT_NAME     - имя компонента "поле свойств�
 FIELD_COMPONENT_TEMPLATE - имя шаблона компонента. По умолчанию - .default
 FIELD_COMPONENT_PARAMS   - массив настроек для компонента
 */
+/* -------------------------------------------------------------------- */
+/* ---------------------------- переменные ---------------------------- */
+/* -------------------------------------------------------------------- */
+// объект свойства
 $propertyObject = $arParams["PROPERTY_OBJECT"];
-if(!is_subclass_of($propertyObject, 'SDBElementProperty')) return;
-/* -------------------------------------------------------------------- */
-/* --------------------------- корректировки -------------------------- */
-/* -------------------------------------------------------------------- */
+if($propertyObject && !is_subclass_of($propertyObject, 'SDBElementProperty')) return;
+// параметры компонента ячейки свойства
 if(!$arParams["FIELD_COMPONENT_NAME"])     $arParams["FIELD_COMPONENT_NAME"]     = 'silta_framework:form_elements.property_field';
 if(!$arParams["FIELD_COMPONENT_TEMPLATE"]) $arParams["FIELD_COMPONENT_TEMPLATE"] = '.default';
 if(!$arParams["FIELD_COMPONENT_PARAMS"])   $arParams["FIELD_COMPONENT_PARAMS"]   =
@@ -34,12 +36,20 @@ if($arParams["FIELD_TYPE"] == 'read') unset($formSaving);
 $propHidden = false;
 if($arParams["ROW_PARAMS"]["HIDDEN"] == 'Y') $propHidden = true;
 // свойство обязательно к заполнению
-$propRequired = $propertyObject->GetAttributes()["required"];
+$propRequired = $arParams["ROW_PARAMS"]["REQUIRED"];
+if(!$propRequired && $propertyObject) $propRequired = $propertyObject->GetAttributes()["required"];
 if(!in_array($propRequired, ["on", "off"]) || $arParams["FIELD_TYPE"] == 'read') unset($propRequired);
 if($propRequired == 'on' && $propHidden) $propRequired = 'off';
 // пустая строка сверху/снизу
 $rowSpace = $arParams["ROW_PARAMS"]["SPACE"];
 if(!in_array($rowSpace, ["top", "bottom"])) unset($rowSpace);
+// титул строки
+$rowTitle = $arParams["ROW_PARAMS"]["TITLE"];
+if(!$rowTitle && $propertyObject) $rowTitle = $propertyObject->GetAttributes()["title"];
+// имя строки
+$rowName = $arParams["ROW_PARAMS"]["NAME"];
+if(!$rowName && $propertyObject) $rowName = $propertyObject->GetName();
+if(!$rowName)                    $rowName = 'property_row'.rand();
 /* -------------------------------------------------------------------- */
 /* ----------------------- параметры для шаблона ---------------------- */
 /* -------------------------------------------------------------------- */
@@ -49,8 +59,8 @@ $arResult =
 	"field_component_template" => $arParams["FIELD_COMPONENT_TEMPLATE"],
 	"field_component_params"   => $arParams["FIELD_COMPONENT_PARAMS"],
 
-	"row_title"                => $propertyObject->GetAttributes()["title"],
-	"prop_name"                => $propertyObject->GetName(),
+	"row_title"                => $rowTitle,
+	"prop_name"                => $rowName,
 	"form_saving"              => $formSaving,
 	"required"                 => $propRequired,
 	"attr"                     => $arParams["ROW_PARAMS"]["ATTR"],

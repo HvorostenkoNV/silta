@@ -16,7 +16,7 @@ SinputStringSetName      - задать имя input. Принимает арг�
 	/* -------------------------------------------------------------------- */
 	jQuery.fn.SinputStringValidation = function()
 		{
-		if(this.attr("silta-form-element") != 'input-string') return false;
+		if(this.getInputType() != 'input-string') return false;
 		return true;
 		};
 	/* -------------------------------------------------------------------- */

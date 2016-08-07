@@ -26,7 +26,7 @@ function SuserSelectorGetCallButton()
 	/* -------------------------------------------------------------------- */
 	jQuery.fn.SuserSelectorValidation = function()
 		{
-		if(this.attr("silta-form-element") != 'user-selector') return false;
+		if(this.getInputType() != 'user-selector') return false;
 		return true;
 		};
 	/* -------------------------------------------------------------------- */

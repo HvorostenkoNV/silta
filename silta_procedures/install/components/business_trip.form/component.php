@@ -29,9 +29,9 @@ $inputesName =
 /* -------------------------------------------------------------------- */
 if(is_set($_POST[$inputesName["main_form_submit"]]))
 	{
-	/*
-	$propsSave = [];
-	$formValue = $_POST[$inputesName["main_form_prefix"]];
+	$propsSave       = [];
+	$formValue       = $_POST[$inputesName["main_form_prefix"]];
+	$applicationLink = '';
 	// переданные параметры
 	foreach($_FILES[$inputesName["main_form_prefix"]]["name"] as $property => $infoArray)
 		foreach($infoArray["new"] as $index => $name)
@@ -51,18 +51,39 @@ if(is_set($_POST[$inputesName["main_form_submit"]]))
 	// создание элемента
 	if($procedureElement->GetElementId() == 'new')
 		{
-		$procedureElement->GetProperty("name") ->SetValue($procedureElement->GetProperty("department")->GetValue("title").' - '.date('d.m.Y'));
-		$procedureElement->GetProperty("stage")->SetValue("start");
+		$procedureElement->GetProperty("name") ->SetValue($procedureElement->GetProperty("user_department")->GetValue("title").' - '.date('d.m.Y'));
+		$procedureElement->GetProperty("stage")->SetValue("creating");
 		foreach(["name", "stage"] as $property) $propsSave[] = $property;
+		}
+	// корректировки
+	if($procedureElement->GetProperty("hotel_need")->GetValue() == 'N')
+		foreach(["hotel_start_date", "hotel_end_date"] as $property)
+			{
+			$procedureElement->GetProperty($property)->UnsetValue();
+			if(!in_array($property, $propsSave)) $propsSave[] = $property;
+			}
+
+	foreach([["hotel_start_date", "hotel_end_date"], ["trip_start_date", "trip_end_date"]] as $propertyArray)
+		{
+		$startDates = SgetClearArray($procedureElement->GetProperty($propertyArray[0])->GetValue());
+		$endDates   = SgetClearArray($procedureElement->GetProperty($propertyArray[1])->GetValue());
+		if(!count($startDates) || !count($endDates)) continue;
+
+		foreach($startDates as $index => $value)
+			if(!$endDates[$index])
+				unset($startDates[$index]);
+		$procedureElement->GetProperty($propertyArray[0])->SetValue($startDates);
+		$procedureElement->GetProperty($propertyArray[1])->SetValue($endDates);
 		}
 	// сохранение
 	$savingResult = $procedureElement->SaveElement($propsSave);
-	if($savingResult && $procedureElement->GetProperty("created_by")->GetValue() == $USER->GetID() && $procedureElement->GetProperty("stage")->GetValue() == 'start')
-		$procedureElement->ChangeStage("agreement");
+	if($arParams["SAVE_REDIRECT"]) $applicationLink = str_replace('#ELEMENT_ID#', $procedureElement->GetElementId(), $arParams["SAVE_REDIRECT"]);
+	else                           $applicationLink = $APPLICATION->GetCurPage();
 
-	if($arParams["SAVE_REDIRECT"]) LocalRedirect(str_replace('#ELEMENT_ID#', $procedureElement->GetElementId(), $arParams["SAVE_REDIRECT"]));
-	else                           LocalRedirect($APPLICATION->GetCurPage());
-	*/
+	if($savingResult && $procedureElement->GetProperty("created_by")->GetValue() == $USER->GetID() && $procedureElement->GetProperty("stage")->GetValue() == 'creating')
+		$procedureElement->ChangeStage("agreement", $applicationLink);
+
+	LocalRedirect($applicationLink);
 	}
 /* -------------------------------------------------------------------- */
 /* -------------------- готовый массив для шаблона -------------------- */

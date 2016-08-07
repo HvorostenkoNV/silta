@@ -16,7 +16,7 @@ SinputDateSetName      - задать имя input. Принимает аргу�
 	/* -------------------------------------------------------------------- */
 	jQuery.fn.SinputDateValidation = function()
 		{
-		if(this.attr("silta-form-element") != 'input-date') return false;
+		if(this.getInputType() != 'input-date') return false;
 		return true;
 		};
 	/* -------------------------------------------------------------------- */

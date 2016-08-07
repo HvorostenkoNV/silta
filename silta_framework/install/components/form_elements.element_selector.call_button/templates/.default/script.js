@@ -26,7 +26,7 @@ function SelementSelectorGetCallButton()
 	/* -------------------------------------------------------------------- */
 	jQuery.fn.SelementSelectorValidation = function()
 		{
-		if(this.attr("silta-form-element") != 'element-selector') return false;
+		if(this.getInputType() != 'element-selector') return false;
 		return true;
 		};
 	/* -------------------------------------------------------------------- */

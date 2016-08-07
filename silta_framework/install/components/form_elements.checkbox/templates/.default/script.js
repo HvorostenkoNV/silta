@@ -15,7 +15,7 @@ ScheckboxSetName      - задать имя чекбокса. Принимает
 	/* -------------------------------------------------------------------- */
 	jQuery.fn.ScheckboxValidation = function()
 		{
-		if(this.attr("silta-form-element") != 'checkbox') return false;
+		if(this.getInputType() != 'checkbox') return false;
 		return true;
 		};
 	/* -------------------------------------------------------------------- */

@@ -16,7 +16,7 @@ SinputFileSetName      - задать имя input. Принимает аргу�
 	/* -------------------------------------------------------------------- */
 	jQuery.fn.SinputFileValidation = function()
 		{
-		if(this.attr("silta-form-element") != 'input-file') return false;
+		if(this.getInputType() != 'input-file') return false;
 		return true;
 		};
 	/* -------------------------------------------------------------------- */

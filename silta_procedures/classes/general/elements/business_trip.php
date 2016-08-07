@@ -7,7 +7,7 @@ class SProceduresBusinessTripElement extends SIBlockElement
 		$assistUser       = '',
 		$departmentObject = false;
 	/* ----------------------------------------------------------------- */
-	/* ------------------------- уровеь доступа ------------------------ */
+	/* ------------------------ уровень доступа ------------------------ */
 	/* ----------------------------------------------------------------- */
 	protected function AccessCalculating()
 		{
@@ -108,46 +108,45 @@ class SProceduresBusinessTripElement extends SIBlockElement
 	/* ----------------------------------------------------------------- */
 	/* --------------------- отправить уведомление --------------------- */
 	/* ----------------------------------------------------------------- */
-	final public function SendAlert($alertType = '')
+	final public function SendAlert($alertType = '', $applicationLink)
 		{
-		/*
 		if($this->GetElementId() == 'new' || !$alertType) return;
 		// переменные
 		$senderId        = false;
-		$senderEmail     = [];
+		$senderEmail     = false;
 		$getersId        = [];
 		$getersEmail     = [];
 		$alertText       = '';
 		$alertTitle      = '';
-		$applicationLink = 'http://'.$_SERVER["HTTP_HOST"].SProceduresFixedAssetsWork::GetInstance()->GetComponentUrl().'provision_application/'.$this->GetElementId().'/';
+		$applicationLink = 'http://'.$_SERVER["HTTP_HOST"].$applicationLink;
 		// типы оповещений
-		if($alertType == 'sign_user_alert')
-			{
-			$alertText  = GetMessage("SP_FAW_PROV_APPLIC_SIGN_USER_ALERT_TEXT");
-			$alertTitle = GetMessage("SP_FAW_PROV_APPLIC_SIGN_USER_ALERT_TITLE");
-			$senderId   = $this->GetProperty("created_by")->GetValue();
-			$getersId[] = $this->GetCurrentAgreementUser();
-			}
 		if($alertType == 'returned_to_author')
 			{
-			$alertText  = GetMessage("SP_FAW_PROV_APPLIC_RETURNED_TO_AUTHOR_TEXT");
-			$alertTitle = GetMessage("SP_FAW_PROV_APPLIC_RETURNED_TO_AUTHOR_TITLE");
+			$alertText  = GetMessage("SP_BTR_RETURNED_TO_AUTHOR_TEXT");
+			$alertTitle = GetMessage("SP_BTR_RETURNED_TO_AUTHOR_TITLE");
 			$senderId   = CUser::GetID();
 			$getersId[] = $this->GetProperty("created_by")->GetValue();
 			}
-		if($alertType == 'responsibles_alert')
+		if($alertType == 'sign_boss_alert')
 			{
-			$alertText  = GetMessage("SP_FAW_PROV_APPLIC_RESPONSIBLES_ALERT_TEXT");
-			$alertTitle = GetMessage("SP_FAW_PROV_APPLIC_RESPONSIBLES_ALERT_TITLE");
+			$alertText  = GetMessage("SP_BTR_SIGN_BOSS_ALERT_TEXT");
+			$alertTitle = GetMessage("SP_BTR_SIGN_BOSS_ALERT_TITLE");
 			$senderId   = $this->GetProperty("created_by")->GetValue();
-			$getersId   = $this->GetResponsibles();
+			$getersId[] = $this->GetSignBoss();
+			}
+		if($alertType == 'assist_user_alert')
+			{
+			$alertText  = GetMessage("SP_BTR_ASSIST_USER_ALERT_TEXT");
+			$alertTitle = GetMessage("SP_BTR_ASSIST_USER_ALERT_TITLE");
+			$senderId   = $this->GetProperty("created_by")->GetValue();
+			$getersId[] = $this->GetAssistUser();
 			}
 		if($alertType == 'closed')
 			{
-			$alertText  = GetMessage("SP_FAW_PROV_APPLIC_CLOSED_TEXT");
-			$alertTitle = GetMessage("SP_FAW_PROV_APPLIC_CLOSED_TITLE");
+			$alertText  = GetMessage("SP_BTR_CLOSED_TEXT");
+			$alertTitle = GetMessage("SP_BTR_CLOSED_TITLE");
 			$senderId   = CUser::GetID();
-			$getersId   = $this->GetProperty("created_by")->GetValue();
+			$getersId[] = $this->GetProperty("created_by")->GetValue();
 			}
 		$getersId = [566];
 		if(!$senderId || !count($getersId) || !$alertText || !$alertTitle) return;
@@ -162,7 +161,7 @@ class SProceduresBusinessTripElement extends SIBlockElement
 		if($senderEmail && count($getersEmail))
 			CEvent::Send
 				(
-				"SP_FAW", "s1",
+				"SP_BTR", "s1",
 					[
 					"EMAIL_FROM"       => $senderEmail,
 					"EMAIL_TO"         => implode(',', $getersEmail),
@@ -181,49 +180,39 @@ class SProceduresBusinessTripElement extends SIBlockElement
 				"NOTIFY_MESSAGE" =>
 					$alertText.
 					"\n".
-					'<a href="'.$applicationLink.'">'.GetMessage("SP_FAW_PROV_APPLIC_ALERT_TEXT_LINK_NAME").'</a>'
+					'<a href="'.$applicationLink.'">'.GetMessage("SP_BTR_ALERT_TEXT_LINK_NAME").'</a>'
 				]);
-		*/
 		}
 	/* ----------------------------------------------------------------- */
 	/* --------------------- изменить стадию заявки -------------------- */
 	/* ----------------------------------------------------------------- */
-	final public function ChangeStage($stage = '')
+	final public function ChangeStage($stage = '', $applicationLink)
 		{
-		/*
 		if($stage == 'start')
 			{
-			$this->GetProperty("stage")->SetValue("start");
-			$this->GetProperty("user_signed")->UnsetValue();
-			$this->SaveElement(["user_signed", "stage"]);
-			$this->SendAlert("returned_to_author");
+			$this->GetProperty("stage")->SetValue("creating");
+			$this->SaveElement(["stage"]);
+			$this->SendAlert("returned_to_author", $applicationLink);
 			}
 		if($stage == 'agreement')
 			{
-			$this->GetProperty("stage")->SetValue("agreement");
-			if($this->GetCurrentAgreementUser())
-				$this->SendAlert("sign_user_alert");
-			else
-				{
-				$this->GetProperty("stage")->SetValue("responsible");
-				$this->SendAlert("responsibles_alert");
-				}
+			$this->GetProperty("stage")->SetValue("boss_confirm");
 			$this->SaveElement(["stage"]);
+			$this->SendAlert("sign_boss_alert", $applicationLink);
 			}
-		if($stage == 'end')
+		if($stage == 'assist_user_work')
 			{
-			$this->GetProperty("active")->SetValue("N");
-			$this->GetProperty("stage") ->SetValue("end");
-			$this->SaveElement(["active", "stage"]);
-			$this->SendAlert("closed");
+			$this->GetProperty("stage")->SetValue("manager_confirm");
+			$this->SaveElement(["stage"]);
+			$this->SendAlert("assist_user_alert", $applicationLink);
 			}
 		if($stage == 'close')
 			{
+			$this->GetProperty("stage")->SetValue("finished");
 			$this->GetProperty("active")->SetValue("N");
-			$this->SaveElement(["active"]);
-			$this->SendAlert("closed");
+			$this->SaveElement(["active", "stage"]);
+			$this->SendAlert("closed", $applicationLink);
 			}
-		*/
 		}
 	}
 ?>

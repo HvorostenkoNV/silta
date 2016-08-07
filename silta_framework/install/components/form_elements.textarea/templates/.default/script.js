@@ -16,7 +16,7 @@ StextareaSetName      - задать имя textarea. Принимает арг�
 	/* -------------------------------------------------------------------- */
 	jQuery.fn.StextareaValidation = function()
 		{
-		if(this.attr("silta-form-element") != 'textarea') return false;
+		if(this.getInputType() != 'textarea') return false;
 		return true;
 		};
 	/* -------------------------------------------------------------------- */

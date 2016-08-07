@@ -7,13 +7,35 @@
 (function($)
 	{
 	/* -------------------------------------------------------------------- */
+	/* ----------------------- получить строку формы ---------------------- */
+	/* -------------------------------------------------------------------- */
+	jQuery.fn.getFormRow = function(value)
+		{
+		if(!value) return this.find('[silta-form-property-row]');
+		return this.find('[silta-form-property-row="'+value+'"]');
+		};
+	/* -------------------------------------------------------------------- */
+	/* ------------------------ получить поле формы ----------------------- */
+	/* -------------------------------------------------------------------- */
+	jQuery.fn.getFormInput = function()
+		{
+		return this.find('[silta-form-element]');
+		};
+	/* -------------------------------------------------------------------- */
+	/* ------------------------- получить тип поля ------------------------ */
+	/* -------------------------------------------------------------------- */
+	jQuery.fn.getInputType = function()
+		{
+		return this.attr("silta-form-element");
+		};
+	/* -------------------------------------------------------------------- */
 	/* ---------------------- получить значение поля ---------------------- */
 	/* -------------------------------------------------------------------- */
 	jQuery.fn.getInputValue = function()
 		{
 		var
 			$input    = this,
-			inputType = $input.attr("silta-form-element");
+			inputType = $input.getInputType();
 		if(!inputType) return false;
 
 		if(inputType == 'input-string')     return $input.SinputStringGetValue();
@@ -35,7 +57,7 @@
 			{
 			var
 				$input    = $(this),
-				inputType = $input.attr("silta-form-element");
+				inputType = $input.getInputType();
 			if(!inputType) return true;
 
 			if(inputType == 'input-string')     $input.SinputStringSetValue(value);
@@ -58,7 +80,7 @@
 			{
 			var
 				$input    = $(this),
-				inputType = $input.attr("silta-form-element");
+				inputType = $input.getInputType();
 			if(!inputType) return true;
 
 			if(inputType == 'input-string')     $input.SinputStringAlert(value);
@@ -79,7 +101,7 @@
 		{
 		var
 			$input    = this,
-			inputType = $input.attr("silta-form-element");
+			inputType = $input.getInputType();
 		if(!inputType) return false;
 
 		if(inputType == 'input-string')     return $input.SinputStringCheckFielded();
@@ -99,7 +121,7 @@
 		{
 		var
 			$input    = this,
-			inputType = $input.attr("silta-form-element");
+			inputType = $input.getInputType();
 		if(!inputType) return false;
 
 		if(inputType == 'input-string')     return $input.SinputStringGetName();
@@ -121,7 +143,7 @@
 			{
 			var
 				$input    = $(this),
-				inputType = $input.attr("silta-form-element");
+				inputType = $input.getInputType();
 			if(!inputType) return true;
 
 			if(inputType == 'input-string')     $input.SinputStringSetName(value);
@@ -140,14 +162,14 @@
 	/* -------------------------------------------------------------------- */
 	jQuery.fn.clearForm = function()
 		{
-		this.find('[silta-form-element]').each(function()
+		this.getFormInput().each(function()
 			{
 			var inputValue = false;
-			if($(this).attr("silta-form-element") == 'checkbox') inputValue = 'off';
+			if($(this).getInputType() == 'checkbox') inputValue = 'off';
 			$(this).setInputValue(inputValue).setInputAlert("off");
 			});
 
-		this.find('[silta-form-property-row]').each(function()
+		this.getFormRow().each(function()
 			{
 			$(this)
 				.setPropSaving("on")
@@ -161,11 +183,11 @@
 	jQuery.fn.checkFormFielded = function()
 		{
 		var result = true;
-		this.find('[silta-form-element]').setInputAlert("off");
-		this.find('[silta-form-property-row]').each(function()
+		this.getFormInput().setInputAlert("off");
+		this.getFormRow().each(function()
 			{
 			if($(this).getRequiredValue() == 'on')
-				$(this).find('[silta-form-element]').each(function()
+				$(this).getFormInput().each(function()
 					{
 					if(!$(this).checkInputFielded())
 						{

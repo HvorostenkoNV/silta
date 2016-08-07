@@ -1,5 +1,6 @@
 $(function()
 	{
+	// форма чтения/запись
 	$('body').on
 		(
 		'click',
@@ -14,5 +15,16 @@ $(function()
 
 		if($(this).is('[edit-button]'))   {$elementsWrite.show();$elementsRead.hide()}
 		if($(this).is('[cancel-button]')) {$elementsRead.show();$elementsWrite.hide()}
+		});
+	// тригер проживание Да/Нет
+	$('body').on('change', '[hotel-need-triger]', function()
+		{
+		var
+			$form             = $(this).closest("form"),
+			$hotelIntervalRow = $form.getFormRow("hotel_interval"),
+			value             = $form.getFormRow("hotel_need").getFormInput().getInputValue();
+
+		if(value == 'Y') $hotelIntervalRow.show();
+		if(value == 'N') $hotelIntervalRow.hide();
 		});
 	});

@@ -16,7 +16,7 @@ SselectSetName      - задать имя select. Принимает аргум�
 	/* -------------------------------------------------------------------- */
 	jQuery.fn.SselectValidation = function()
 		{
-		if(this.attr("silta-form-element") != 'select') return false;
+		if(this.getInputType() != 'select') return false;
 		return true;
 		};
 	/* -------------------------------------------------------------------- */

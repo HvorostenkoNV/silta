@@ -24,7 +24,7 @@ $(function()
 				{
 				newName = Math.floor(Math.random()*(99999));
 				$newRow.find('[rename-inputes="'+renameInpute+'"]').attr('rename-inputes', newName);
-				$newRow.find('[silta-form-element]').each(function()
+				$newRow.getFormInput().each(function()
 					{
 					$(this).setInputName($(this).getInputName().replace(renameInpute, newName));
 					});

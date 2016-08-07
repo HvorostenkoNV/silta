@@ -17,7 +17,7 @@ SinputNumberSetName      - задать имя input. Принимает арг�
 	/* -------------------------------------------------------------------- */
 	jQuery.fn.SinputNumberValidation = function()
 		{
-		if(this.attr("silta-form-element") != 'input-number') return false;
+		if(this.getInputType() != 'input-number') return false;
 		return true;
 		};
 	/* -------------------------------------------------------------------- */

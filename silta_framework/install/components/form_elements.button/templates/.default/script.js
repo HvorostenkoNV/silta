@@ -24,7 +24,7 @@ $(function()
 			}
 		// удаление не рабочих свойств формы
 		WaitingScreenOn();
-		$form.find('[silta-form-property-row]').each(function()
+		$form.getFormRow().each(function()
 			{
 			if($(this).getPropSaving() == 'off')
 				$(this).remove();
