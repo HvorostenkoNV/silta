@@ -21,6 +21,7 @@
 					<col width="30%"><col width="70%">
 					<tbody>
 						<?
+<<<<<<< Updated upstream
 						foreach(["created_by", "user_department", "trip_start_date", "trip_description", "path_description", "wishes_description", "hotel_need", "hotel_start_date"] as $property)
 							if($arResult["main_form_props"][$fieldType][$property])
 								{
@@ -96,6 +97,35 @@
 											]
 										);
 									}
+=======
+						if($arResult["main_form_props"][$fieldType]["created_by"])
+							$APPLICATION->IncludeComponent
+								(
+								"silta_framework:form_elements.property_row", '',
+									[
+									"FIELD_TYPE"      => $fieldType,
+									"PROPERTY_OBJECT" => $arResult["main_form_props"][$fieldType]["created_by"],
+									"FIELD_PARAMS"    => ["INPUT_NAME" => $arResult["input_name"]["main_form"].'[created_by]']
+									]
+								);
+						
+						
+						foreach(["user_department", "trip_start_date", "trip_end_date", "trip_description", "path_description", "wishes_description", "hotel_need", "hotel_start_date", "hotel_end_date"] as $property)
+							if($arResult["main_form_props"][$fieldType][$property])
+								{
+								$APPLICATION->IncludeComponent
+									(
+									"silta_framework:form_elements.property_row", '',
+										[
+										"FIELD_TYPE"      => $fieldType,
+										"PROPERTY_OBJECT" => $arResult["main_form_props"][$fieldType][$property],
+										"FIELD_PARAMS"    => 
+											[
+											"INPUT_NAME" => $arResult["input_name"]["main_form"].'['.$property.']'
+											]
+										]
+									);
+>>>>>>> Stashed changes
 								}
 						?>
 					</tbody>
