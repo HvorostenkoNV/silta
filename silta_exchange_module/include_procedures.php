@@ -2,6 +2,8 @@
 <?
 $includeProcedures["SexchangeIPcontragents"] = "classes/general/procedures_import/SexchangeIPcontragents.php";
 $includeProcedures["SexchangeIEcontragents"] = "classes/general/elements_import/SexchangeIEcontragents.php";
+$includeProcedures["SexchangeIPdiymodulesales"] = "classes/general/procedures_import/SexchangeIPdiymodulesales.php";
+$includeProcedures["SexchangeIEdiymodulesales"] = "classes/general/elements_import/SexchangeIEdiymodulesales.php";
 $includeProcedures["SexchangeIPdiymoduleshops"] = "classes/general/procedures_import/SexchangeIPdiymoduleshops.php";
 $includeProcedures["SexchangeIEdiymoduleshops"] = "classes/general/elements_import/SexchangeIEdiymoduleshops.php";
 $includeProcedures["SexchangeIPfixedassets"] = "classes/general/procedures_import/SexchangeIPfixedassets.php";

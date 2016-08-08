@@ -11,11 +11,7 @@ class SProceduresBusinessTripElement extends SIBlockElement
 	/* ----------------------------------------------------------------- */
 	protected function AccessCalculating()
 		{
-<<<<<<< Updated upstream
 		// Ð½Ð¾Ð²Ñ‹Ð¹ ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚
-=======
-		// íîâûé ýëåìåíò
->>>>>>> Stashed changes
 		if($this->GetElementId() == 'new')
 			{
 			$departmentsList = [];
@@ -29,11 +25,7 @@ class SProceduresBusinessTripElement extends SIBlockElement
 			$this->GetProperty("user_department")->ChangeType("list")->SetAttributes(["list" => $departmentsList]);
 			return;
 			}
-<<<<<<< Updated upstream
 		// Ð¿Ð¾Ð»Ð½Ð¾ÑÑ‚ÑŒÑŽ Ð·Ð°ÐºÑ€Ñ‹Ñ‚Ñ‹Ð¹ Ð´Ð¾ÑÑ‚ÑƒÐ¿ Ðº ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚Ñƒ/ÑÐ²Ð¾Ð¹ÑÑ‚Ð²Ð°Ð¼
-=======
-		// ïîëíîñòüþ çàêðûòûé äîñòóï ê ýëåìåíòó/ñâîéñòâàì
->>>>>>> Stashed changes
 		foreach($this->GetPropertyList() as $propertyObject) $propertyObject->SetAccess("write", false);
 		foreach(["write", "delete"] as $type)                $this          ->SetAccess($type,   false);
 		if($this->GetProperty("active")->GetValue() == 'N')  return;

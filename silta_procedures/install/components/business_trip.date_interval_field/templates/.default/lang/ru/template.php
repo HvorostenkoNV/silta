@@ -1,5 +1,5 @@
 <?
-$MESS["SP_BTR_DAYS_TITLE1"] = 'день';
-$MESS["SP_BTR_DAYS_TITLE2"] = 'дня';
-$MESS["SP_BTR_DAYS_TITLE3"] = 'дней';
+$MESS["SP_BTR_DAYS_TITLE1"] = 'РґРµРЅСЊ';
+$MESS["SP_BTR_DAYS_TITLE2"] = 'РґРЅСЏ';
+$MESS["SP_BTR_DAYS_TITLE3"] = 'РґРЅРµР№';
 ?>
