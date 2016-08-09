@@ -2,8 +2,6 @@
 <?
 $includeProcedures["SexchangeIPcontragents"] = "classes/general/procedures_import/SexchangeIPcontragents.php";
 $includeProcedures["SexchangeIEcontragents"] = "classes/general/elements_import/SexchangeIEcontragents.php";
-$includeProcedures["SexchangeIPdiymodulesales"] = "classes/general/procedures_import/SexchangeIPdiymodulesales.php";
-$includeProcedures["SexchangeIEdiymodulesales"] = "classes/general/elements_import/SexchangeIEdiymodulesales.php";
 $includeProcedures["SexchangeIPdiymoduleshops"] = "classes/general/procedures_import/SexchangeIPdiymoduleshops.php";
 $includeProcedures["SexchangeIEdiymoduleshops"] = "classes/general/elements_import/SexchangeIEdiymoduleshops.php";
 $includeProcedures["SexchangeIPfixedassets"] = "classes/general/procedures_import/SexchangeIPfixedassets.php";
@@ -14,6 +12,8 @@ $includeProcedures["SexchangeIPfixedassetswork"] = "classes/general/procedures_i
 $includeProcedures["SexchangeIEfixedassetswork"] = "classes/general/elements_import/SexchangeIEfixedassetswork.php";
 $includeProcedures["SexchangeIPnomenclature"] = "classes/general/procedures_import/SexchangeIPnomenclature.php";
 $includeProcedures["SexchangeIEnomenclature"] = "classes/general/elements_import/SexchangeIEnomenclature.php";
+$includeProcedures["SexchangeEPdiymodulesales"] = "classes/general/procedures_export/SexchangeEPdiymodulesales.php";
+$includeProcedures["SexchangeEEdiymodulesales"] = "classes/general/elements_export/SexchangeEEdiymodulesales.php";
 $includeProcedures["SexchangeEPfixedassetswork"] = "classes/general/procedures_export/SexchangeEPfixedassetswork.php";
 $includeProcedures["SexchangeEEfixedassetswork"] = "classes/general/elements_export/SexchangeEEfixedassetswork.php";
 $includeProcedures["SexchangeEPportaldepartments"] = "classes/general/procedures_export/SexchangeEPportaldepartments.php";
