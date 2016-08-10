@@ -11,20 +11,7 @@ class SProceduresBusinessTripElement extends SIBlockElement
 	/* ----------------------------------------------------------------- */
 	protected function AccessCalculating()
 		{
-		// новый элемент
-		if($this->GetElementId() == 'new')
-			{
-			$departmentsList = [];
-			foreach(SProceduresBusinessTrip::GetInstance()->GetUserDepartments() as $departmentId)
-				$departmentsList[] =
-					[
-					"value" => $departmentId,
-					"code"  => $departmentId,
-					"title" => (new SCompanyDepartment(["id" => $departmentId]))->GetName()
-					];
-			$this->GetProperty("user_department")->ChangeType("list")->SetAttributes(["list" => $departmentsList]);
-			return;
-			}
+		if($this->GetElementId() == 'new') return;
 		// полностью закрытый доступ к элементу/свойствам
 		foreach($this->GetPropertyList() as $propertyObject) $propertyObject->SetAccess("write", false);
 		foreach(["write", "delete"] as $type)                $this          ->SetAccess($type,   false);
@@ -44,16 +31,16 @@ class SProceduresBusinessTripElement extends SIBlockElement
 			foreach($propsGroups["responsible"] as $property) $this->GetProperty($property)->SetAccess("write", true);
 			}
 		// создание заявки
-		if($this->GetProperty("stage")->GetValue() == 'creating' && $this->GetProperty("created_by")->GetValue() == CUser::GetID())
+		if($this->GetStage() == 'start' && $this->GetProperty("created_by")->GetValue() == CUser::GetID())
 			{
 			foreach(["write", "delete"]    as $type)     $this->SetAccess($type, true);
 			foreach($propsGroups["author"] as $property) $this->GetProperty($property)->SetAccess("write", true);
 			}
 		// согласование с руководством
-		if($this->GetProperty("stage")->GetValue() == 'boss_confirm' && CUser::GetID() == $this->GetSignBoss())
+		if($this->GetStage() == 'boss_agreement' && CUser::GetID() == $this->GetSignBoss())
 			$this->SetAccess("write", true);
 		// участие ответственного
-		if($this->GetProperty("stage")->GetValue() == 'manager_confirm' && CUser::IsAdmin() == $this->GetAssistUser())
+		if($this->GetStage() == 'assist_user_work' && CUser::IsAdmin() == $this->GetAssistUser())
 			{
 			$this->SetAccess("write", true);
 			foreach($propsGroups["responsible"] as $property) $this->GetProperty($property)->SetAccess("write", true);
@@ -184,6 +171,34 @@ class SProceduresBusinessTripElement extends SIBlockElement
 				]);
 		}
 	/* ----------------------------------------------------------------- */
+	/* --------------------- получить стадию заявки -------------------- */
+	/* ----------------------------------------------------------------- */
+	final public function GetStage()
+		{
+		if($this->GetElementId() == 'new') return "start";
+		switch($this->GetProperty("stage")->GetValue())
+			{
+			case"creating":        return "start";
+			case"boss_confirm":    return "boss_agreement";
+			case"manager_confirm": return "assist_user_work";
+			case"finished":        return "end";
+			}
+		}
+	/* ----------------------------------------------------------------- */
+	/* ----------------- получить список стадий заявки ----------------- */
+	/* ----------------------------------------------------------------- */
+	final public function GetStageList()
+		{
+		$listArray = $this->GetProperty("stage")->GetAttributes()["list"];
+		return
+			[
+			"start"            => $listArray["creating"]["title"],
+			"boss_agreement"   => $listArray["boss_confirm"]["title"],
+			"assist_user_work" => $listArray["manager_confirm"]["title"],
+			"end"              => $listArray["finished"]["title"]
+			];
+		}
+	/* ----------------------------------------------------------------- */
 	/* --------------------- изменить стадию заявки -------------------- */
 	/* ----------------------------------------------------------------- */
 	final public function ChangeStage($stage = '', $applicationLink)
@@ -191,10 +206,11 @@ class SProceduresBusinessTripElement extends SIBlockElement
 		if($stage == 'start')
 			{
 			$this->GetProperty("stage")->SetValue("creating");
-			$this->SaveElement(["stage"]);
+			foreach(["returned_text", "returned_files"] as $property) $this->GetProperty($property)->UnsetValue();
+			$this->SaveElement(["stage", "returned_text", "returned_files"]);
 			$this->SendAlert("returned_to_author", $applicationLink);
 			}
-		if($stage == 'agreement')
+		if($stage == 'boss_agreement')
 			{
 			$this->GetProperty("stage")->SetValue("boss_confirm");
 			$this->SaveElement(["stage"]);
@@ -206,11 +222,37 @@ class SProceduresBusinessTripElement extends SIBlockElement
 			$this->SaveElement(["stage"]);
 			$this->SendAlert("assist_user_alert", $applicationLink);
 			}
-		if($stage == 'close')
+		if($stage == 'end')
 			{
 			$this->GetProperty("stage")->SetValue("finished");
 			$this->GetProperty("active")->SetValue("N");
 			$this->SaveElement(["active", "stage"]);
+			$this->SendAlert("closed", $applicationLink);
+
+			$datesArray =
+				[
+				"start" => SgetClearArray($this->GetProperty("trip_start_date")->GetValue()),
+				"end"   => SgetClearArray($this->GetProperty("trip_end_date")  ->GetValue())
+				];
+			foreach($datesArray["start"] as $index => $value)
+				{
+				$startDate = $value;
+				$endDate   = $datesArray["end"][$index];
+				if(!$startDate || !$endDate) continue;
+
+				$absenceElement = SCompanyTables::GetInstance()->GetTable("absence")->GetElement("new");
+				$absenceElement->GetProperty("USER")        ->SetValue($this->GetProperty("created_by")->GetValue());
+				$absenceElement->GetProperty("ABSENCE_TYPE")->SetValue("ASSIGNMENT");
+				$absenceElement->GetProperty("name")        ->SetValue($absenceElement->GetProperty("ABSENCE_TYPE")->GetAttributes()["list"]["ASSIGNMENT"]["title"]);
+				$absenceElement->GetProperty("active_from") ->SetValue($startDate);
+				$absenceElement->GetProperty("active_to")   ->SetValue($endDate);
+				$absenceElement->SaveElement([]);
+				}
+			}
+		if($stage == 'close')
+			{
+			$this->GetProperty("active")->SetValue("N");
+			$this->SaveElement(["active"]);
 			$this->SendAlert("closed", $applicationLink);
 			}
 		}

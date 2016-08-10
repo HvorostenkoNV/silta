@@ -11,23 +11,21 @@ STAGE_DESCRIPTION - об.текст стадий
 /* ---------------------------- переменные ---------------------------- */
 /* -------------------------------------------------------------------- */
 $procedureElement = $arParams["ELEMENT_OBJECT"];
-if(!$procedureElement->GetProperty("stage")->GetValue())
-	$procedureElement->GetProperty("stage")->SetValue("creating");
 /* -------------------------------------------------------------------- */
 /* -------------------- готовый массив для шаблона -------------------- */
 /* -------------------------------------------------------------------- */
 $statusArray = [];
-foreach($procedureElement->GetProperty("stage")->GetAttributes()["list"] as $type => $listInfo)
+foreach($procedureElement->GetStageList() as $value => $title)
 	{
 	$infoArray =
 		[
-		"title" => $listInfo["title"],
-		"type"  => $type
+		"title" => $title,
+		"type"  => $value
 		];
 
-	if($type == $procedureElement->GetProperty("stage")->GetValue()) $infoArray["checked"]    = true;
-	if($type == 'boss_confirm')                                      $infoArray["boss_id"]    = $procedureElement->GetSignBoss();
-	if($type == 'manager_confirm')                                   $infoArray["manager_id"] = $procedureElement->GetAssistUser();
+	if($value == $procedureElement->GetStage()) $infoArray["checked"]    = true;
+	if($value == 'boss_agreement')              $infoArray["boss_id"]    = $procedureElement->GetSignBoss();
+	if($value == 'assist_user_work')            $infoArray["manager_id"] = $procedureElement->GetAssistUser();
 
 	$statusArray[] = $infoArray;
 	}

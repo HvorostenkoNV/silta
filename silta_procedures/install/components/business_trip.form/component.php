@@ -13,25 +13,42 @@ DELETE_REDIRECT - редирект при удалении (путь)
 /* -------------------------------------------------------------------- */
 $procedureElement = $arParams["ELEMENT_OBJECT"];
 if(!$procedureElement) return ShowError(GetMessage("SF_ELEMENT_NOT_EXIST"));
+// новый элемент
+if($procedureElement->GetElementId() == 'new')
+	{
+	$departmentsList = [];
+	foreach(SProceduresBusinessTrip::GetInstance()->GetUserDepartments() as $departmentId)
+		$departmentsList[] =
+			[
+			"value" => $departmentId,
+			"code"  => $departmentId,
+			"title" => (new SCompanyDepartment(["id" => $departmentId]))->GetName()
+			];
+	$procedureElement->GetProperty("user_department")->ChangeType("list")->SetAttributes(["list" => $departmentsList]);
+	}
 // имена элементов форм
 $inputesName =
 	[
-	"main_form_prefix"         => 'sp-btr-main-info',
-	"boss_confirm_form_prefix" => 'sp-btr-boss-confirm',
-	"assist_form_prefix"       => 'sp-btr-assist-info',
-	"main_form_submit"         => 'sp-btr-main-info-submit-'.$procedureElement->GetElementId(),
-	"boss_confirm_form_submit" => 'sp-btr-boss-confirm-info-submit-'.$procedureElement->GetElementId(),
-	"assist_form_submit"       => 'sp-btr-assist-info-submit-'.$procedureElement->GetElementId(),
-	"assist_form_send"         => 'sp-btr-assist-send-'.$procedureElement->GetElementId()
+	"main_form_prefix"      => 'sp-btr-main-info',
+	"boss_sign_form_prefix" => 'sp-btr-boss-sign',
+	"assist_form_prefix"    => 'sp-btr-assist-info',
+
+	"main_form_submit"   => 'sp-btr-main-info-submit-'.$procedureElement->GetElementId(),
+	"boss_sign_confirm"  => 'sp-btr-boss-confirm-submit-'.$procedureElement->GetElementId(),
+	"boss_sign_reject"   => 'sp-btr-boss-reject-submit-'.$procedureElement->GetElementId(),
+	"boss_sign_return"   => 'sp-btr-boss-return-submit-'.$procedureElement->GetElementId(),
+	"assist_form_submit" => 'sp-btr-assist-info-submit-'.$procedureElement->GetElementId(),
+	"assist_app_send"    => 'sp-btr-assist-send-'.$procedureElement->GetElementId()
 	];
 /* -------------------------------------------------------------------- */
-/* -------------------- обработчик формы элемента --------------------- */
+/* ------------------ обработчик формы основной инфы ------------------ */
 /* -------------------------------------------------------------------- */
 if(is_set($_POST[$inputesName["main_form_submit"]]))
 	{
 	$propsSave       = [];
 	$formValue       = $_POST[$inputesName["main_form_prefix"]];
 	$applicationLink = '';
+	$savingResult    = false;
 	// переданные параметры
 	foreach($_FILES[$inputesName["main_form_prefix"]]["name"] as $property => $infoArray)
 		foreach($infoArray["new"] as $index => $name)
@@ -76,14 +93,54 @@ if(is_set($_POST[$inputesName["main_form_submit"]]))
 		$procedureElement->GetProperty($propertyArray[1])->SetValue($endDates);
 		}
 	// сохранение
-	$savingResult = $procedureElement->SaveElement($propsSave);
+	if(count($propsSave)) $savingResult = $procedureElement->SaveElement($propsSave);
+	if(!$savingResult) LocalRedirect($APPLICATION->GetCurPage());
+
 	if($arParams["SAVE_REDIRECT"]) $applicationLink = str_replace('#ELEMENT_ID#', $procedureElement->GetElementId(), $arParams["SAVE_REDIRECT"]);
 	else                           $applicationLink = $APPLICATION->GetCurPage();
 
-	if($savingResult && $procedureElement->GetProperty("created_by")->GetValue() == $USER->GetID() && $procedureElement->GetProperty("stage")->GetValue() == 'creating')
-		$procedureElement->ChangeStage("agreement", $applicationLink);
+	if($procedureElement->GetProperty("created_by")->GetValue() == $USER->GetID() && $procedureElement->GetStage() == 'start')
+		$procedureElement->ChangeStage("boss_agreement", $applicationLink);
 
 	LocalRedirect($applicationLink);
+	}
+/* -------------------------------------------------------------------- */
+/* --------------------- обработчик согласования ---------------------- */
+/* -------------------------------------------------------------------- */
+if
+	(
+	is_set($_POST[$inputesName["boss_sign_confirm"]])
+	||
+	is_set($_POST[$inputesName["boss_sign_reject"]])
+	||
+	is_set($_POST[$inputesName["boss_sign_return"]])
+	)
+	{
+	$propsSave = [];
+	$formValue = $_POST[$inputesName["boss_sign_form_prefix"]];
+	// переданные параметры
+	foreach($_FILES[$inputesName["boss_sign_form_prefix"]]["name"] as $property => $infoArray)
+		foreach($infoArray["new"] as $index => $name)
+			$formValue[$property]["new"][] =
+				[
+				"name"     => $name,
+				"tmp_name" => $_FILES[$inputesName["boss_sign_form_prefix"]]["tmp_name"][$property]["new"][$index],
+				];
+	// утсановка переданных параметров
+	foreach($formValue as $property => $value)
+		{
+		$propertyObject = $procedureElement->GetProperty($property);
+		if(!$propertyObject) continue;
+		$propertyObject->SetValue($value, "form");
+		$propsSave[] = $property;
+		}
+	// сохранение
+	if(count($propsSave)) $savingResult = $procedureElement->SaveElement($propsSave);
+	if(is_set($_POST[$inputesName["boss_sign_reject"]]))  $procedureElement->ChangeStage("close");
+	if(is_set($_POST[$inputesName["boss_sign_return"]]))  $procedureElement->ChangeStage("start");
+	if(is_set($_POST[$inputesName["boss_sign_confirm"]])) $procedureElement->ChangeStage("assist_user_work");
+	// редирект
+	LocalRedirect($APPLICATION->GetCurPage());
 	}
 /* -------------------------------------------------------------------- */
 /* -------------------- готовый массив для шаблона -------------------- */
@@ -103,6 +160,12 @@ foreach(["user_department", "trip_start_date", "trip_end_date", "trip_descriptio
 	if($procedureElement->GetElementId() != 'new')                                   $mainFormProps["read"] [$property] = $propertyObject;
 	if($procedureElement->GetAccess("write") && $propertyObject->GetAccess("write")) $mainFormProps["write"][$property] = $propertyObject;
 	}
+// форма согласования
+$signFormProps = [];
+if($procedureElement->GetStage() == 'boss_agreement')
+	{
+	
+	}
 // готовый массив
 $arResult =
 	[
@@ -115,16 +178,18 @@ $arResult =
 		],
 	"input_name"       =>
 		[
-		"main_form"         => $inputesName["main_form_prefix"],
-		"boss_confirm_form" => $inputesName["boss_confirm_form_prefix"],
-		"assist_form"       => $inputesName["assist_form_prefix"]
+		"main_form"      => $inputesName["main_form_prefix"],
+		"boss_sign_form" => $inputesName["boss_sign_form_prefix"],
+		"assist_form"    => $inputesName["assist_form_prefix"]
 		],
 	"button_names"     =>
 		[
-		"main_form_submit"         => $inputesName["main_form_submit"],
-		"boss_confirm_form_submit" => $inputesName["boss_confirm_form_submit"],
-		"assist_form_submit"       => $inputesName["assist_form_submit"],
-		"assist_form_send"         => $inputesName["assist_form_send"]
+		"main_form_submit"   => $inputesName["main_form_submit"],
+		"boss_sign_confirm"  => $inputesName["boss_sign_confirm"],
+		"boss_sign_reject"   => $inputesName["boss_sign_reject"],
+		"boss_sign_return"   => $inputesName["boss_sign_return"],
+		"assist_form_submit" => $inputesName["assist_form_submit"],
+		"assist_app_send"    => $inputesName["assist_app_send"]
 		]
 	];
 /* -------------------------------------------------------------------- */

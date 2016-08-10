@@ -48,7 +48,8 @@ class SProceduresBusinessTripTable extends SIBlockTable
 
 		$availableDepartments = $BusinessTrip->GetSubordinateDepartments();
 		foreach($BusinessTrip->GetAssistDepartments() as $departmentId) $availableDepartments[] = $departmentId;
-		$this->SetQueryAccess(["user_department" => $availableDepartments]);
+		if(count($availableDepartments)) $this->SetQueryAccess(["user_department" => $availableDepartments]);
+		else                             $this->SetQueryAccess(["created_by" => CUser::GetId()]);
 		}
 	}
 ?>

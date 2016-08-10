@@ -36,7 +36,7 @@ final class SProceduresBusinessTrip extends SCompanyProcedures
 		return $RESULT;
 		}
 	/* ----------------------------------------------------------------- */
-	/* ------------------- подчиненные подразделения ------------------- */
+	/* ---------------------- подразделения юзера ---------------------- */
 	/* ----------------------------------------------------------------- */
 	public function GetUserDepartments()
 		{
@@ -70,12 +70,13 @@ final class SProceduresBusinessTrip extends SCompanyProcedures
 		{
 		if($this->assistDepartments[0]) return $this->assistDepartments;
 		foreach($this->GetResponsibles() as $departmentId => $userId)
-			{
-			$departmentObject = new SCompanyDepartment(["id" => $departmentId]);
-			$this->assistDepartments[] = $departmentObject->GetId();
-			foreach($departmentObject->GetDepartments() as $childDepartmentId)
-				$this->assistDepartments[] = $childDepartmentId;
-			}
+			if($userId == CUser::GetID())
+				{
+				$departmentObject = new SCompanyDepartment(["id" => $departmentId]);
+				$this->assistDepartments[] = $departmentObject->GetId();
+				foreach($departmentObject->GetDepartments() as $childDepartmentId)
+					$this->assistDepartments[] = $childDepartmentId;
+				}
 		return $this->assistDepartments;
 		}
 	}
