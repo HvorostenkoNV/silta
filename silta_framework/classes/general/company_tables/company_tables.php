@@ -21,7 +21,8 @@ final class SCompanyTables
 			"trade_marks"         => ["module_option" => 'trade_marks_iblock_id',         "table_class_name" => 'ScompanyTableTradeMarks'],
 			"nomenclature"        => ["module_option" => 'nomenclature_iblock_id',        "table_class_name" => 'ScompanyTableNomenclature'],
 			"fixed_assets"        => ["module_option" => 'fixed_assets_iblock_id',        "table_class_name" => 'ScompanyTableFixedAssets'],
-			"fixed_assets_groups" => ["module_option" => 'fixed_assets_groups_iblock_id', "table_class_name" => 'ScompanyTableFixedAssetsGroups']
+			"fixed_assets_groups" => ["module_option" => 'fixed_assets_groups_iblock_id', "table_class_name" => 'ScompanyTableFixedAssetsGroups'],
+			"absence"             => ["module_option" => 'absence_iblock_id',             "table_class_name" => 'ScompanyTableAbsence']
 			];
 		foreach($this->tablesInfo as $table => $arrayInfo)
 			{

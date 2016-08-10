@@ -57,7 +57,7 @@ final class SexchangeEPdiymodulesales extends SexchangeExportProcedure
 		$RESULT      = [];
 		$tableObject = $this->GetTableObject();
 		if($tableObject)
-			foreach($tableObject->GetQuery(["ID" => 'asc'], ["talks_type"   => 'retail', "changed_date" => [$startDate, $endDate]]) as $elementId)
+			foreach($tableObject->GetQuery(["ID" => 'asc'], ["talks_type"   => 'retail', "date" => [$startDate, $endDate]]) as $elementId)
 				$RESULT[] = ["ID" => $elementId];
 		return $RESULT;
 		}

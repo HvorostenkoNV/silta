@@ -13,7 +13,7 @@ final class SexchangeEEdiymodulesales extends SexchangeExportElement
 			[
 			"id"                    => $elementObject->GetElementId(),
 			"active"                => $elementObject->GetProperty("active")                   ->GetValue(),
-			"date"                  => $elementObject->GetProperty("date")                     ->GetValue(),
+			"date"                  => $elementObject->GetProperty("date")                     ->GetValue("full_date"),
 			"user"                  => $elementObject->GetProperty("user")                     ->GetValue(),
 			"shop"                  => $elementObject->GetProperty("diy_shop")                 ->GetValue(),
 			"nomenclature_count"    => $elementObject->GetProperty("nomenclature_count")       ->GetValue(),

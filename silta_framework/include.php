@@ -50,7 +50,8 @@ CModule::AddAutoloadClasses
 		"ScompanyTableTradeMarks"        => $class_folder.'company_tables/trade_marks.php',
 		"ScompanyTableNomenclature"      => $class_folder.'company_tables/nomenclature.php',
 		"ScompanyTableFixedAssets"       => $class_folder.'company_tables/fixed_assets.php',
-		"ScompanyTableFixedAssetsGroups" => $class_folder.'company_tables/fixed_assets_groups.php'
+		"ScompanyTableFixedAssetsGroups" => $class_folder.'company_tables/fixed_assets_groups.php',
+		"ScompanyTableAbsence"           => $class_folder.'company_tables/absence.php'
 		]
 	);
 // функции
