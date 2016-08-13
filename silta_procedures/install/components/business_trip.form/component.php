@@ -136,9 +136,9 @@ if
 		}
 	// сохранение
 	if(count($propsSave)) $savingResult = $procedureElement->SaveElement($propsSave);
-	if(is_set($_POST[$inputesName["boss_sign_reject"]]))  $procedureElement->ChangeStage("close");
-	if(is_set($_POST[$inputesName["boss_sign_return"]]))  $procedureElement->ChangeStage("start");
-	if(is_set($_POST[$inputesName["boss_sign_confirm"]])) $procedureElement->ChangeStage("assist_user_work");
+	if(is_set($_POST[$inputesName["boss_sign_reject"]]))  $procedureElement->ChangeStage("close",            $APPLICATION->GetCurPage());
+	if(is_set($_POST[$inputesName["boss_sign_return"]]))  $procedureElement->ChangeStage("start",            $APPLICATION->GetCurPage());
+	if(is_set($_POST[$inputesName["boss_sign_confirm"]])) $procedureElement->ChangeStage("assist_user_work", $APPLICATION->GetCurPage());
 	// редирект
 	LocalRedirect($APPLICATION->GetCurPage());
 	}
@@ -160,12 +160,28 @@ foreach(["user_department", "trip_start_date", "trip_end_date", "trip_descriptio
 	if($procedureElement->GetElementId() != 'new')                                   $mainFormProps["read"] [$property] = $propertyObject;
 	if($procedureElement->GetAccess("write") && $propertyObject->GetAccess("write")) $mainFormProps["write"][$property] = $propertyObject;
 	}
+// примечания к доработке
+$alertProps = [];
+foreach(["returned_text", "returned_files"] as $property)
+	{
+	$propertyObject = $procedureElement->GetProperty($property);
+	$propertyObject->GetValue();
+	if($propertyObject->GetValueParams()["value_geted"]) $alertProps[] = $propertyObject;
+	}
 // форма согласования
 $signFormProps = [];
-if($procedureElement->GetStage() == 'boss_agreement')
-	{
-	
-	}
+foreach(["returned_text", "returned_files"] as $property)
+	if($procedureElement->GetProperty($property)->GetAccess("write"))
+		$signFormProps[$property] = $procedureElement->GetProperty($property);
+// форма доп.инфы
+$specialInfoProps = ["read" => [], "write" => []];
+if(!in_array($procedureElement->GetStage(), ["start", "boss_agreement"]))
+	foreach(["trip_day_cost", "hotel_day_cost", "hotel_comments", "trip_files", "ticket_name", "ticket_date", "ticket_cost"] as $property)
+		{
+		$propertyObject = $procedureElement->GetProperty($property);
+		$specialInfoProps["read"][$property] = $propertyObject;
+		if($procedureElement->GetAccess("write") && $propertyObject->GetAccess("write")) $specialInfoProps["write"][$property] = $propertyObject;
+		}
 // готовый массив
 $arResult =
 	[
@@ -176,11 +192,18 @@ $arResult =
 		"read"  => $mainFormProps["read"],
 		"write" => $mainFormProps["write"]
 		],
+	"add_form_props"   =>
+		[
+		"read"  => $specialInfoProps["read"],
+		"write" => $specialInfoProps["write"]
+		],
+	"alert_props"      => $alertProps,
+	"sign_form_props"  => $signFormProps,
 	"input_name"       =>
 		[
-		"main_form"      => $inputesName["main_form_prefix"],
-		"boss_sign_form" => $inputesName["boss_sign_form_prefix"],
-		"assist_form"    => $inputesName["assist_form_prefix"]
+		"main_form"   => $inputesName["main_form_prefix"],
+		"sign_form"   => $inputesName["boss_sign_form_prefix"],
+		"assist_form" => $inputesName["assist_form_prefix"]
 		],
 	"button_names"     =>
 		[

@@ -20,8 +20,9 @@ class SProceduresBusinessTripElement extends SIBlockElement
 		$propsGroups =
 			[
 			"author"            => ["trip_start_date", "trip_end_date", "trip_description", "path_description", "wishes_description", "hotel_need", "hotel_start_date", "hotel_end_date"],
+			"boss"              => ["returned_text", "returned_files"],
 			"responsible"       => ["trip_day_cost", "hotel_day_cost", "hotel_comments", "trip_files", "ticket_name", "ticket_date", "ticket_cost"],
-			"required_to_write" => ["active", "stage", "returned", "returned_text", "returned_files"]
+			"required_to_write" => ["active", "stage", "returned"]
 			];
 		// админ
 		if(CUser::IsAdmin())
@@ -38,7 +39,10 @@ class SProceduresBusinessTripElement extends SIBlockElement
 			}
 		// согласование с руководством
 		if($this->GetStage() == 'boss_agreement' && CUser::GetID() == $this->GetSignBoss())
+			{
 			$this->SetAccess("write", true);
+			foreach($propsGroups["boss"] as $property) $this->GetProperty($property)->SetAccess("write", true);
+			}
 		// участие ответственного
 		if($this->GetStage() == 'assist_user_work' && CUser::IsAdmin() == $this->GetAssistUser())
 			{
@@ -206,14 +210,14 @@ class SProceduresBusinessTripElement extends SIBlockElement
 		if($stage == 'start')
 			{
 			$this->GetProperty("stage")->SetValue("creating");
-			foreach(["returned_text", "returned_files"] as $property) $this->GetProperty($property)->UnsetValue();
-			$this->SaveElement(["stage", "returned_text", "returned_files"]);
+			$this->SaveElement(["stage"]);
 			$this->SendAlert("returned_to_author", $applicationLink);
 			}
 		if($stage == 'boss_agreement')
 			{
 			$this->GetProperty("stage")->SetValue("boss_confirm");
-			$this->SaveElement(["stage"]);
+			foreach(["returned_text", "returned_files"] as $property) $this->GetProperty($property)->UnsetValue();
+			$this->SaveElement(["stage", "returned_text", "returned_files"]);
 			$this->SendAlert("sign_boss_alert", $applicationLink);
 			}
 		if($stage == 'assist_user_work')

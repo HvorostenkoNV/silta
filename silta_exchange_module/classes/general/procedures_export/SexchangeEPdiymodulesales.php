@@ -51,13 +51,15 @@ final class SexchangeEPdiymodulesales extends SexchangeExportProcedure
 		{
 		$startDate = $_GET["diy_sales_start_date"];
 		$endDate   = $_GET["diy_sales_end_date"];
-		if(!$startDate) $startDate = date("d.m.Y", AddToTimeStamp(["DD" => -1], MakeTimeStamp(date('d.m.Y'), "DD.MM.YYYY")));
-		if(!$endDate)   $endDate   = date('d.m.Y');
+
+		$filter = ["talks_type" => 'retail'];
+		if($startDate && $endDate) $filter["date"] = [$startDate, $endDate];
+		else                       $filter["created_date"] = [date("d.m.Y", AddToTimeStamp(["DD" => -1], MakeTimeStamp(date('d.m.Y'), "DD.MM.YYYY"))), date('d.m.Y')];
 
 		$RESULT      = [];
 		$tableObject = $this->GetTableObject();
 		if($tableObject)
-			foreach($tableObject->GetQuery(["ID" => 'asc'], ["talks_type"   => 'retail', "date" => [$startDate, $endDate]]) as $elementId)
+			foreach($tableObject->GetQuery(["ID" => 'asc'], $filter) as $elementId)
 				$RESULT[] = ["ID" => $elementId];
 		return $RESULT;
 		}
