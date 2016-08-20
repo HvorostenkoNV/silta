@@ -43,14 +43,9 @@ abstract class SDBElementProperty
 	/* ----------------------------------------------------------------- */
 	/* ----------------------- методы по доступу ----------------------- */
 	/* ----------------------------------------------------------------- */
-	final public function GetAccess($accessType = '') {return $this->accessArray[$accessType];}
-	final public function GetAccessArray()            {return $this->accessArray;}
-
-	final public function SetAccess($type = '', $value = false)
-		{
-		$this->accessArray[$type] = (boolean) $value;
-		if($this->GetElementObject()->GetElementId() == 'new') $this->accessArray["write"] = true;
-		}
+	final public function GetAccess($accessType = '')           {return $this->accessArray[$accessType];}
+	final public function GetAccessArray()                      {return $this->accessArray;}
+	final public function SetAccess($type = '', $value = false) {$this->accessArray[$type] = (boolean) $value;}
 	/* ----------------------------------------------------------------- */
 	/* --------------------------- аттрибуты --------------------------- */
 	/* ----------------------------------------------------------------- */

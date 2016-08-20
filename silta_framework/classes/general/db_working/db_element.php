@@ -49,6 +49,9 @@ abstract class SDBElement
 		{
 		$this->accessArray[$type] = (boolean) $value;
 		if($this->GetElementId() == 'new') $this->accessArray["delete"] = false;
+		if(!$this->accessArray["write"])
+			foreach($this->GetPropertyList() as $propertyObject)
+				$propertyObject->SetAccess("write", false);
 		}
 
 	final protected function CalculateAccess()
@@ -126,6 +129,7 @@ abstract class SDBElement
 		// сохранение
 		$savingResult = $this->ElementSaving($propsArray);
 		$this->AfterElementSaving();
+		$this->CalculateAccess();
 		return $savingResult;
 		}
 	/* ----------------------------------------------------------------- */

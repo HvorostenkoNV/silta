@@ -22,7 +22,7 @@ class SProceduresBusinessTripTable extends SIBlockTable
 				"hotel_need", "hotel_start_date", "hotel_end_date",
 				"trip_day_cost", "hotel_day_cost", "hotel_comments", "trip_files",
 				"ticket_name", "ticket_date", "ticket_cost",
-				"returned", "returned_text", "returned_files"
+				"returned_text", "returned_files"
 				],
 			"props_types"     =>
 				[
@@ -31,7 +31,7 @@ class SProceduresBusinessTripTable extends SIBlockTable
 				"hotel_need" => 'string', "hotel_start_date" => 'date', "hotel_end_date" => 'date',
 				"trip_day_cost" => 'number', "hotel_day_cost" => 'number', "hotel_comments" => 'text', "trip_files" => 'file',
 				"ticket_name" => 'string', "ticket_date" => 'string', "ticket_cost" => 'string',
-				"returned" => 'string', "returned_text" => 'text', "returned_files" => 'file'
+				"returned_text" => 'text', "returned_files" => 'file'
 				],
 			"props_required"  => ["stage", "user_department", "trip_start_date", "trip_end_date", "trip_description", "path_description"],
 			"props_multiply"  => ["trip_start_date", "trip_end_date", "hotel_start_date", "hotel_end_date", "trip_files", "ticket_name", "ticket_date", "ticket_cost"]
@@ -40,7 +40,7 @@ class SProceduresBusinessTripTable extends SIBlockTable
 		/* ----------------------------------------- */
 		/* ----------- настройки свойств ----------- */
 		/* ----------------------------------------- */
-		foreach(["hotel_need", "returned"] as $property) $this->GetProperty($property)->ChangeType("boolean");
+		$this->GetProperty("hotel_need")->ChangeType("boolean");
 		/* ----------------------------------------- */
 		/* ----------- настройки доступа ----------- */
 		/* ----------------------------------------- */

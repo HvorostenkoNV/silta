@@ -13,6 +13,16 @@ DELETE_REDIRECT - редирект при удалении (путь)
 /* -------------------------------------------------------------------- */
 $procedureElement = $arParams["ELEMENT_OBJECT"];
 if(!$procedureElement) return ShowError(GetMessage("SF_ELEMENT_NOT_EXIST"));
+
+foreach(["write", "delete"] as $type) echo $procedureElement->GetAccess($type).'#<br>';
+echo '<br>------- <b>write</b> --------<br>';
+foreach($procedureElement->GetPropertyList() as $obj)
+	if($obj->GetAccess("write"))
+		echo $obj->GetName().'<br>';
+echo '<br>------- <b>NOT</b> --------<br>';
+foreach($procedureElement->GetPropertyList() as $obj)
+	if(!$obj->GetAccess("write"))
+		echo $obj->GetName().'<br>';
 // новый элемент
 if($procedureElement->GetElementId() == 'new')
 	{
@@ -25,6 +35,7 @@ if($procedureElement->GetElementId() == 'new')
 			"title" => (new SCompanyDepartment(["id" => $departmentId]))->GetName()
 			];
 	$procedureElement->GetProperty("user_department")->ChangeType("list")->SetAttributes(["list" => $departmentsList]);
+	$procedureElement->GetProperty("hotel_need")->SetValue("Y");
 	}
 // имена элементов форм
 $inputesName =
@@ -45,11 +56,11 @@ $inputesName =
 /* -------------------------------------------------------------------- */
 if(is_set($_POST[$inputesName["main_form_submit"]]))
 	{
-	$propsSave       = [];
-	$formValue       = $_POST[$inputesName["main_form_prefix"]];
-	$applicationLink = '';
-	$savingResult    = false;
-	// переданные параметры
+	$propsSave       = [];                                       // массив свойств, которые необходимо записать
+	$formValue       = $_POST[$inputesName["main_form_prefix"]]; // переданные данные формы
+	$applicationLink = '';                                       // ссылка на страницу после записи
+	$savingResult    = false;                                    // результат записи
+	// переданные файлы
 	foreach($_FILES[$inputesName["main_form_prefix"]]["name"] as $property => $infoArray)
 		foreach($infoArray["new"] as $index => $name)
 			$formValue[$property]["new"][] =
@@ -57,7 +68,7 @@ if(is_set($_POST[$inputesName["main_form_submit"]]))
 				"name"     => $name,
 				"tmp_name" => $_FILES[$inputesName["main_form_prefix"]]["tmp_name"][$property]["new"][$index],
 				];
-	// утсановка переданных параметров
+	// утсановка переданных данных формы
 	foreach($formValue as $property => $value)
 		{
 		$propertyObject = $procedureElement->GetProperty($property);
@@ -65,7 +76,7 @@ if(is_set($_POST[$inputesName["main_form_submit"]]))
 		$propertyObject->SetValue($value, "form");
 		$propsSave[] = $property;
 		}
-	// создание элемента
+	// при создании нового элемента
 	if($procedureElement->GetElementId() == 'new')
 		{
 		$procedureElement->GetProperty("name") ->SetValue($procedureElement->GetProperty("user_department")->GetValue("title").' - '.date('d.m.Y'));
@@ -77,7 +88,7 @@ if(is_set($_POST[$inputesName["main_form_submit"]]))
 		foreach(["hotel_start_date", "hotel_end_date"] as $property)
 			{
 			$procedureElement->GetProperty($property)->UnsetValue();
-			if(!in_array($property, $propsSave)) $propsSave[] = $property;
+			$propsSave[] = $property;
 			}
 
 	foreach([["hotel_start_date", "hotel_end_date"], ["trip_start_date", "trip_end_date"]] as $propertyArray)
@@ -92,7 +103,7 @@ if(is_set($_POST[$inputesName["main_form_submit"]]))
 		$procedureElement->GetProperty($propertyArray[0])->SetValue($startDates);
 		$procedureElement->GetProperty($propertyArray[1])->SetValue($endDates);
 		}
-	// сохранение
+	// запись
 	if(count($propsSave)) $savingResult = $procedureElement->SaveElement($propsSave);
 	if(!$savingResult) LocalRedirect($APPLICATION->GetCurPage());
 
@@ -116,9 +127,9 @@ if
 	is_set($_POST[$inputesName["boss_sign_return"]])
 	)
 	{
-	$propsSave = [];
-	$formValue = $_POST[$inputesName["boss_sign_form_prefix"]];
-	// переданные параметры
+	$propsSave = [];                                            // массив свойств, которые необходимо записать
+	$formValue = $_POST[$inputesName["boss_sign_form_prefix"]]; // переданные данные формы
+	// переданные файлы
 	foreach($_FILES[$inputesName["boss_sign_form_prefix"]]["name"] as $property => $infoArray)
 		foreach($infoArray["new"] as $index => $name)
 			$formValue[$property]["new"][] =
@@ -126,7 +137,7 @@ if
 				"name"     => $name,
 				"tmp_name" => $_FILES[$inputesName["boss_sign_form_prefix"]]["tmp_name"][$property]["new"][$index],
 				];
-	// утсановка переданных параметров
+	// утсановка переданных данных формы
 	foreach($formValue as $property => $value)
 		{
 		$propertyObject = $procedureElement->GetProperty($property);
@@ -134,12 +145,11 @@ if
 		$propertyObject->SetValue($value, "form");
 		$propsSave[] = $property;
 		}
-	// сохранение
+	// запись
 	if(count($propsSave)) $savingResult = $procedureElement->SaveElement($propsSave);
 	if(is_set($_POST[$inputesName["boss_sign_reject"]]))  $procedureElement->ChangeStage("close",            $APPLICATION->GetCurPage());
 	if(is_set($_POST[$inputesName["boss_sign_return"]]))  $procedureElement->ChangeStage("start",            $APPLICATION->GetCurPage());
 	if(is_set($_POST[$inputesName["boss_sign_confirm"]])) $procedureElement->ChangeStage("assist_user_work", $APPLICATION->GetCurPage());
-	// редирект
 	LocalRedirect($APPLICATION->GetCurPage());
 	}
 /* -------------------------------------------------------------------- */
@@ -157,8 +167,8 @@ if($procedureElement->GetElementId() != 'new') $mainFormProps["read"]["created_b
 foreach(["user_department", "trip_start_date", "trip_end_date", "trip_description", "path_description", "wishes_description", "hotel_need", "hotel_start_date", "hotel_end_date"] as $property)
 	{
 	$propertyObject = $procedureElement->GetProperty($property);
-	if($procedureElement->GetElementId() != 'new')                                   $mainFormProps["read"] [$property] = $propertyObject;
-	if($procedureElement->GetAccess("write") && $propertyObject->GetAccess("write")) $mainFormProps["write"][$property] = $propertyObject;
+	if($procedureElement->GetElementId() != 'new') $mainFormProps["read"] [$property] = $propertyObject;
+	if($propertyObject->GetAccess("write"))        $mainFormProps["write"][$property] = $propertyObject;
 	}
 // примечания к доработке
 $alertProps = [];
@@ -170,9 +180,10 @@ foreach(["returned_text", "returned_files"] as $property)
 	}
 // форма согласования
 $signFormProps = [];
-foreach(["returned_text", "returned_files"] as $property)
-	if($procedureElement->GetProperty($property)->GetAccess("write"))
-		$signFormProps[$property] = $procedureElement->GetProperty($property);
+if($procedureElement->GetStage() == 'boss_agreement')
+	foreach(["returned_text", "returned_files"] as $property)
+		if($procedureElement->GetProperty($property)->GetAccess("write"))
+			$signFormProps[$property] = $procedureElement->GetProperty($property);
 // форма доп.инфы
 $specialInfoProps = ["read" => [], "write" => []];
 if(!in_array($procedureElement->GetStage(), ["start", "boss_agreement"]))
@@ -180,7 +191,7 @@ if(!in_array($procedureElement->GetStage(), ["start", "boss_agreement"]))
 		{
 		$propertyObject = $procedureElement->GetProperty($property);
 		$specialInfoProps["read"][$property] = $propertyObject;
-		if($procedureElement->GetAccess("write") && $propertyObject->GetAccess("write")) $specialInfoProps["write"][$property] = $propertyObject;
+		if($propertyObject->GetAccess("write")) $specialInfoProps["write"][$property] = $propertyObject;
 		}
 // готовый массив
 $arResult =

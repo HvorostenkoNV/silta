@@ -50,78 +50,31 @@
 						foreach(["created_by", "user_department", "trip_start_date", "trip_description", "path_description", "wishes_description", "hotel_need", "hotel_start_date"] as $property)
 							if($arResult["main_form_props"][$fieldType][$property])
 								{
-								$propertyObject = $arResult["main_form_props"][$fieldType][$property];
-								// интервалы дат
-								if($property == 'trip_start_date' || $property == 'hotel_start_date')
+								$rowParams   = [];
+								$fieldParams = ["INPUT_NAME" => $arResult["input_name"]["main_form"].'['.$property.']'];
+								if($property == 'user_department') $rowParams["SPACE"]  = 'bottom';
+								if($property == 'hotel_need')      $fieldParams["ATTR"] = 'hotel-need-triger';
+								if($property == 'trip_start_date')
 									{
-									$rowParams               = [];
-									$startDatePropertyObject = $propertyObject;
-									if($property == 'trip_start_date')  $endDatePropertyObject = $arResult["main_form_props"][$fieldType]["trip_end_date"];
-									if($property == 'hotel_start_date') $endDatePropertyObject = $arResult["main_form_props"][$fieldType]["hotel_end_date"];
-
-									if($property == 'trip_start_date')  $rowParams["TITLE"] = GetMessage("SP_BTR_TRIP_INTERVAL_TITLE");
-									if($property == 'hotel_start_date') $rowParams["TITLE"] = GetMessage("SP_BTR_HOTEL_INTERVAL_TITLE");
-
-									if($property == 'trip_start_date')  $rowParams["NAME"] = 'trip_interval';
-									if($property == 'hotel_start_date') $rowParams["NAME"] = 'hotel_interval';
-
-									if
-										(
-										$startDatePropertyObject->GetAttributes()["required"] == 'on'
-										&&
-										$endDatePropertyObject->GetAttributes()["required"] == 'on'
-										)
-										$rowParams["REQUIRED"] = 'on';
-
-									if
-										(
-										$property == 'hotel_start_date'
-										&&
-										$arResult["main_form_props"][$fieldType]["hotel_need"]
-										&&
-										$arResult["main_form_props"][$fieldType]["hotel_need"]->GetValue() == 'N'
-										)
-										$rowParams["HIDDEN"] = 'Y';
-
-									if($startDatePropertyObject && $endDatePropertyObject)
-										$APPLICATION->IncludeComponent
-											(
-											"silta_framework:form_elements.property_row", '',
-												[
-												"FIELD_TYPE"             => $fieldType,
-												"ROW_PARAMS"             => $rowParams,
-												"FIELD_COMPONENT_NAME"   => 'silta_procedures:business_trip.date_interval_field',
-												"FIELD_COMPONENT_PARAMS" => 
-													[
-													"FIELD_TYPE"       => $fieldType,
-													"PROPERTY_START"   => $startDatePropertyObject,
-													"PROPERTY_END"     => $endDatePropertyObject,
-													"INPUT_NAME_START" => $arResult["input_name"]["main_form"].'['.$startDatePropertyObject->GetName().']',
-													"INPUT_NAME_END"   => $arResult["input_name"]["main_form"].'['.$endDatePropertyObject  ->GetName().']',
-													"ELEMENT_OBJECT"   => $startDatePropertyObject->GetElementObject()
-													]
-												]
-											);
+									$fieldParams["INPUT_NAME_START"] = $arResult["input_name"]["main_form"].'[trip_start_date]';
+									$fieldParams["INPUT_NAME_END"]   = $arResult["input_name"]["main_form"].'[trip_end_date]';
 									}
-								// остальное
-								else
+								if($property == 'hotel_start_date')
 									{
-									$rowParams   = [];
-									$fieldParams = ["INPUT_NAME" => $arResult["input_name"]["main_form"].'['.$property.']'];
-									if($property == 'user_department') $rowParams["SPACE"] = 'bottom';
-									if($property == 'hotel_need')      $fieldParams["ATTR"] = 'hotel-need-triger';
-
-									$APPLICATION->IncludeComponent
-										(
-										"silta_framework:form_elements.property_row", '',
-											[
-											"FIELD_TYPE"      => $fieldType,
-											"PROPERTY_OBJECT" => $propertyObject,
-											"ROW_PARAMS"      => $rowParams,
-											"FIELD_PARAMS"    => $fieldParams
-											]
-										);
+									$fieldParams["INPUT_NAME_START"] = $arResult["input_name"]["main_form"].'[hotel_start_date]';
+									$fieldParams["INPUT_NAME_END"]   = $arResult["input_name"]["main_form"].'[hotel_end_date]';
 									}
+
+								$APPLICATION->IncludeComponent
+									(
+									"silta_procedures:business_trip.property_row", '',
+										[
+										"FIELD_TYPE"      => $fieldType,
+										"PROPERTY_OBJECT" => $arResult["main_form_props"][$fieldType][$property],
+										"ROW_PARAMS"      => $rowParams,
+										"FIELD_PARAMS"    => $fieldParams
+										]
+									);
 								}
 						?>
 					</tbody>
@@ -267,11 +220,30 @@
 		/* ------------------------------------------ */
 		?>
 		<?foreach(["read", "write"] as $fieldType):?>
-			<?if(count($arResult["main_form_props"][$fieldType])):?>
+			<?if(count($arResult["add_form_props"][$fieldType])):?>
 				<table form-type="<?=$fieldType?>">
 					<col width="30%"><col width="70%">
 					<tbody>
+						<?
+						foreach(["trip_day_cost", "hotel_day_cost", "hotel_comments", "ticket_name", "ticket_date", "ticket_cost", "trip_files"] as $property)
+							if($arResult["add_form_props"][$fieldType][$property])
+								{
+								$rowParams   = [];
+								$fieldParams = ["INPUT_NAME" => $arResult["input_name"]["main_form"].'['.$property.']'];
+								if(in_array($property, ["trip_day_cost", "hotel_comments", "ticket_name"])) $rowParams["SPACE"] = 'bottom';
 
+								$APPLICATION->IncludeComponent
+									(
+									"silta_procedures:business_trip.property_row", '',
+										[
+										"FIELD_TYPE"      => $fieldType,
+										"PROPERTY_OBJECT" => $arResult["add_form_props"][$fieldType][$property],
+										"ROW_PARAMS"      => $rowParams,
+										"FIELD_PARAMS"    => $fieldParams
+										]
+									);
+								}
+						?>
 					</tbody>
 				</table>
 			<?endif?>
@@ -280,8 +252,7 @@
 		/* ------------------------------------------ */
 		/* ----------------- кнопки ----------------- */
 		/* ------------------------------------------ */
-		// кнопки "изменить элемент"
-		if(count($arResult["main_form_props"]["write"]) && !$arResult["new_element"])
+		if(count($arResult["add_form_props"]["write"]))
 			{
 			$APPLICATION->IncludeComponent
 				(
@@ -310,25 +281,12 @@
 					"VALIDATE_FORM_ALERT" => GetMessage("SP_BTR_FORM_SUBMIT_ALERT"),
 					"IMG"                 => $templateFolder.'/images/apply.png',
 					"IMG_POSITION"        => 'left',
-					"NAME"                => $arResult["button_names"]["main_form_submit"],
+					"NAME"                => $arResult["button_names"]["assist_form_submit"],
 					"ATTR"                => 'submit-button',
 					"HIDDEN"              => 'Y'
 					]
 				);
 			}
-		// кнопка "создать элемент"
-		if(count($arResult["main_form_props"]["write"]) && $arResult["new_element"])
-			$APPLICATION->IncludeComponent
-				(
-				"silta_framework:form_elements.button", '',
-					[
-					"TITLE"               => GetMessage("SP_BTR_FORM_CREATE_BUTTON"),
-					"VALIDATE_FORM_ALERT" => GetMessage("SP_BTR_FORM_SUBMIT_ALERT"),
-					"IMG"                 => $templateFolder.'/images/create.png',
-					"IMG_POSITION"        => 'left',
-					"NAME"                => $arResult["button_names"]["main_form_submit"]
-					]
-				);
 		?>
 	</form>
 	<?endif?>

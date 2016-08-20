@@ -3,56 +3,117 @@ IncludeModuleLangFile(__FILE__);
 class SProceduresBusinessTripElement extends SIBlockElement
 	{
 	protected
+		$departmentObject = false,
 		$signBoss         = '',
 		$assistUser       = '',
-		$departmentObject = false;
+		$datesInterval    =
+			[
+			"trip"  => [],
+			"hotel" => []
+			],
+		$fullCost         = '';
 	/* ----------------------------------------------------------------- */
 	/* ------------------------ уровень доступа ------------------------ */
 	/* ----------------------------------------------------------------- */
 	protected function AccessCalculating()
 		{
-		if($this->GetElementId() == 'new') return;
-		// полностью закрытый доступ к элементу/свойствам
-		foreach($this->GetPropertyList() as $propertyObject) $propertyObject->SetAccess("write", false);
-		foreach(["write", "delete"] as $type)                $this          ->SetAccess($type,   false);
-		if($this->GetProperty("active")->GetValue() == 'N')  return;
-		// группы свойств
-		$propsGroups =
+		$openProps      = [];
+		$procedureStage = $this->GetStage();
+		$propsGroups    =
 			[
-			"author"            => ["trip_start_date", "trip_end_date", "trip_description", "path_description", "wishes_description", "hotel_need", "hotel_start_date", "hotel_end_date"],
-			"boss"              => ["returned_text", "returned_files"],
-			"responsible"       => ["trip_day_cost", "hotel_day_cost", "hotel_comments", "trip_files", "ticket_name", "ticket_date", "ticket_cost"],
-			"required_to_write" => ["active", "stage", "returned"]
+			"start"            => ["active", "stage", "name", "user_department", "trip_start_date", "trip_end_date", "trip_description", "path_description", "wishes_description", "hotel_need", "hotel_start_date", "hotel_end_date"],
+			"boss_agreement"   => ["active", "stage", "returned_text", "returned_files"],
+			"assist_user_work" => ["active", "stage", "trip_day_cost", "hotel_day_cost", "hotel_comments", "trip_files", "ticket_name", "ticket_date", "ticket_cost"],
+			"closed"           => ["active", "stage"]
 			];
-		// админ
+		if($this->GetProperty("active")->GetValue() == 'N') $procedureStage = 'end';
+		/* ----------------------------------------- */
+		/* ----------------- автор ----------------- */
+		/* ----------------------------------------- */
+		if($this->GetElementId() == 'new' || CUser::GetID() == $this->GetProperty("created_by")->GetValue())
+			switch($procedureStage)
+				{
+				case "start":
+					$openProps = $propsGroups["start"];
+					break;
+				default:
+					foreach(["write", "delete"] as $type) $this->SetAccess($type, false);
+				}
+		/* ----------------------------------------- */
+		/* ----------------- босс ------------------ */
+		/* ----------------------------------------- */
+		if(CUser::GetID() == $this->GetSignBoss())
+			{
+			$this->SetAccess("delete", false);
+			switch($procedureStage)
+				{
+				case "boss_agreement":
+					$openProps = $propsGroups["boss_agreement"];
+					break;
+				default:
+					$this->SetAccess("write", false);
+				}
+			}
+		/* ----------------------------------------- */
+		/* ------------- ответственный ------------- */
+		/* ----------------------------------------- */
+		if(CUser::GetID() == $this->GetAssistUser())
+			switch($procedureStage)
+				{
+				case "start":
+					foreach(["write", "delete"] as $type) $this->SetAccess($type, false);
+					break;
+				case "boss_agreement":
+					$openProps = $propsGroups["start"];
+					break;
+				case "assist_user_work":
+					$openProps = array_merge($propsGroups["start"], $propsGroups["assist_user_work"]);
+					$this->SetAccess("delete", false);
+					break;
+				case "end":
+					$openProps = $propsGroups["closed"];
+					$this->SetAccess("delete", false);
+				}
+		/* ----------------------------------------- */
+		/* ----------------- админ ----------------- */
+		/* ----------------------------------------- */
 		if(CUser::IsAdmin())
-			{
-			foreach(["write", "delete"]         as $type)     $this->SetAccess($type, true);
-			foreach($propsGroups["author"]      as $property) $this->GetProperty($property)->SetAccess("write", true);
-			foreach($propsGroups["responsible"] as $property) $this->GetProperty($property)->SetAccess("write", true);
-			}
-		// создание заявки
-		if($this->GetStage() == 'start' && $this->GetProperty("created_by")->GetValue() == CUser::GetID())
-			{
-			foreach(["write", "delete"]    as $type)     $this->SetAccess($type, true);
-			foreach($propsGroups["author"] as $property) $this->GetProperty($property)->SetAccess("write", true);
-			}
-		// согласование с руководством
-		if($this->GetStage() == 'boss_agreement' && CUser::GetID() == $this->GetSignBoss())
-			{
-			$this->SetAccess("write", true);
-			foreach($propsGroups["boss"] as $property) $this->GetProperty($property)->SetAccess("write", true);
-			}
-		// участие ответственного
-		if($this->GetStage() == 'assist_user_work' && CUser::IsAdmin() == $this->GetAssistUser())
-			{
-			$this->SetAccess("write", true);
-			foreach($propsGroups["responsible"] as $property) $this->GetProperty($property)->SetAccess("write", true);
-			}
-		// обязательные свойства, открытые на запись
-		if($this->GetAccess("write"))
-			foreach($propsGroups["required_to_write"] as $property)
-				$this->GetProperty($property)->SetAccess("write", true);
+			switch($procedureStage)
+				{
+				case "start":
+					$openProps = $propsGroups["start"];
+					break;
+				case "boss_agreement":
+					$openProps = $propsGroups["start"];
+					break;
+				case "assist_user_work":
+					$openProps = array_merge($propsGroups["start"], $propsGroups["assist_user_work"]);
+					break;
+				case "end":
+					$openProps = $propsGroups["closed"];
+					$this->SetAccess("delete", false);
+				}
+		/* ----------------------------------------- */
+		/* ------- закрытие свойств на запись ------ */
+		/* ----------------------------------------- */
+		foreach($this->GetPropertyList() as $property => $propertyObject)
+			if(!in_array($property, $openProps))
+				$propertyObject->SetAccess("write", false);
+		}
+	/* ----------------------------------------------------------------- */
+	/* --------------------- после записи элемента --------------------- */
+	/* ----------------------------------------------------------------- */
+	protected function AfterElementSaving()
+		{
+		$this->departmentObject = false;
+		$this->signBoss         = '';
+		$this->assistUser       = '';
+		$this->datesInterval    =
+			[
+			"trip"  => [],
+			"hotel" => []
+			];
+		$this->fullCost         = '';
 		}
 	/* ----------------------------------------------------------------- */
 	/* ---------------------- объект подразделения --------------------- */
@@ -67,8 +128,7 @@ class SProceduresBusinessTripElement extends SIBlockElement
 	/* ----------------------------------------------------------------- */
 	final public function GetSignBoss()
 		{
-		if($this->GetElementId() == 'new') return false;
-		if($this->signBoss)                return $this->signBoss;
+		if($this->signBoss) return $this->signBoss;
 
 		$departmentObject = $this->GetDepartmentObject();
 		while(!$this->signBoss && $departmentObject)
@@ -84,8 +144,7 @@ class SProceduresBusinessTripElement extends SIBlockElement
 	/* ----------------------------------------------------------------- */
 	final public function GetAssistUser()
 		{
-		if($this->GetElementId() == 'new') return false;
-		if($this->assistUser)              return $this->assistUser;
+		if($this->assistUser) return $this->assistUser;
 
 		$departmentObject = $this->GetDepartmentObject();
 		while(!$this->assistUser && $departmentObject)
@@ -97,82 +156,34 @@ class SProceduresBusinessTripElement extends SIBlockElement
 		return $this->assistUser;
 		}
 	/* ----------------------------------------------------------------- */
-	/* --------------------- отправить уведомление --------------------- */
+	/* -------------------- получить интервалы дат --------------------- */
 	/* ----------------------------------------------------------------- */
-	final public function SendAlert($alertType = '', $applicationLink)
+	final public function GetDatesInterval($type = '')
 		{
-		if($this->GetElementId() == 'new' || !$alertType) return;
-		// переменные
-		$senderId        = false;
-		$senderEmail     = false;
-		$getersId        = [];
-		$getersEmail     = [];
-		$alertText       = '';
-		$alertTitle      = '';
-		$applicationLink = 'http://'.$_SERVER["HTTP_HOST"].$applicationLink;
-		// типы оповещений
-		if($alertType == 'returned_to_author')
-			{
-			$alertText  = GetMessage("SP_BTR_RETURNED_TO_AUTHOR_TEXT");
-			$alertTitle = GetMessage("SP_BTR_RETURNED_TO_AUTHOR_TITLE");
-			$senderId   = CUser::GetID();
-			$getersId[] = $this->GetProperty("created_by")->GetValue();
-			}
-		if($alertType == 'sign_boss_alert')
-			{
-			$alertText  = GetMessage("SP_BTR_SIGN_BOSS_ALERT_TEXT");
-			$alertTitle = GetMessage("SP_BTR_SIGN_BOSS_ALERT_TITLE");
-			$senderId   = $this->GetProperty("created_by")->GetValue();
-			$getersId[] = $this->GetSignBoss();
-			}
-		if($alertType == 'assist_user_alert')
-			{
-			$alertText  = GetMessage("SP_BTR_ASSIST_USER_ALERT_TEXT");
-			$alertTitle = GetMessage("SP_BTR_ASSIST_USER_ALERT_TITLE");
-			$senderId   = $this->GetProperty("created_by")->GetValue();
-			$getersId[] = $this->GetAssistUser();
-			}
-		if($alertType == 'closed')
-			{
-			$alertText  = GetMessage("SP_BTR_CLOSED_TEXT");
-			$alertTitle = GetMessage("SP_BTR_CLOSED_TITLE");
-			$senderId   = CUser::GetID();
-			$getersId[] = $this->GetProperty("created_by")->GetValue();
-			}
-		$getersId = [566];
-		if(!$senderId || !count($getersId) || !$alertText || !$alertTitle) return;
-		// emails
-		$usersList = CUser::GetList($by = "ID", $order = "desc", ["ID" => implode('|', array_merge($getersId, [$senderId]))], ["FIELDS" => ["ID", "EMAIL"]]);
-		while($userInfo = $usersList->GetNext())
-			{
-			if($userInfo["ID"] == $senderId)         $senderEmail   = $userInfo["EMAIL"];
-			if(in_array($userInfo["ID"], $getersId)) $getersEmail[] = $userInfo["EMAIL"];
-			}
-		// отправка письма
-		if($senderEmail && count($getersEmail))
-			CEvent::Send
-				(
-				"SP_BTR", "s1",
+		if(!in_array($type, ["trip", "hotel"])) return [];
+		if(count($this->datesInterval[$type]))  return $this->datesInterval[$type];
+
+		foreach(["trip" => ["trip_start_date", "trip_end_date"], "hotel" => ["hotel_start_date", "hotel_end_date"]] as $propsType => $propsArray)
+			if($type == $propsType)
+				{
+				$startDatesValue = SgetClearArray($this->GetProperty($propsArray[0])->GetValue());
+				$endDatesValue   = SgetClearArray($this->GetProperty($propsArray[1])->GetValue());
+				}
+
+		foreach($startDatesValue as $index => $value)
+			if($endDatesValue[$index])
+				{
+				$count = round((strtotime($endDatesValue[$index]) - strtotime($value))/86400);
+				if(!$count || $type == 'trip') $count++;
+				$this->datesInterval[$type][] =
 					[
-					"EMAIL_FROM"       => $senderEmail,
-					"EMAIL_TO"         => implode(',', $getersEmail),
-					"TITLE"            => $alertTitle,
-					"TEXT"             => $alertText,
-					"APPLICATION_LINK" => $applicationLink
-					]
-				);
-		// отправка уведомлений
-		foreach($getersId as $userId)
-			CIMNotify::Add
-				([
-				"TO_USER_ID"     => $userId,
-				"FROM_USER_ID"   => $senderId,
-				"NOTIFY_TYPE"    => IM_NOTIFY_SYSTEM,
-				"NOTIFY_MESSAGE" =>
-					$alertText.
-					"\n".
-					'<a href="'.$applicationLink.'">'.GetMessage("SP_BTR_ALERT_TEXT_LINK_NAME").'</a>'
-				]);
+					"start" => $value,
+					"end"   => $endDatesValue[$index],
+					"count" => $count
+					];
+				}
+
+		return $this->datesInterval[$type];
 		}
 	/* ----------------------------------------------------------------- */
 	/* --------------------- получить стадию заявки -------------------- */
@@ -259,6 +270,84 @@ class SProceduresBusinessTripElement extends SIBlockElement
 			$this->SaveElement(["active"]);
 			$this->SendAlert("closed", $applicationLink);
 			}
+		}
+	/* ----------------------------------------------------------------- */
+	/* --------------------- отправить уведомление --------------------- */
+	/* ----------------------------------------------------------------- */
+	final public function SendAlert($alertType = '', $applicationLink)
+		{
+		if($this->GetElementId() == 'new' || !$alertType) return;
+		// переменные
+		$senderId        = false;
+		$senderEmail     = false;
+		$getersId        = [];
+		$getersEmail     = [];
+		$alertText       = '';
+		$alertTitle      = '';
+		$applicationLink = 'http://'.$_SERVER["HTTP_HOST"].$applicationLink;
+		// типы оповещений
+		if($alertType == 'returned_to_author')
+			{
+			$alertText  = GetMessage("SP_BTR_RETURNED_TO_AUTHOR_TEXT");
+			$alertTitle = GetMessage("SP_BTR_RETURNED_TO_AUTHOR_TITLE");
+			$senderId   = CUser::GetID();
+			$getersId[] = $this->GetProperty("created_by")->GetValue();
+			}
+		if($alertType == 'sign_boss_alert')
+			{
+			$alertText  = GetMessage("SP_BTR_SIGN_BOSS_ALERT_TEXT");
+			$alertTitle = GetMessage("SP_BTR_SIGN_BOSS_ALERT_TITLE");
+			$senderId   = $this->GetProperty("created_by")->GetValue();
+			$getersId[] = $this->GetSignBoss();
+			}
+		if($alertType == 'assist_user_alert')
+			{
+			$alertText  = GetMessage("SP_BTR_ASSIST_USER_ALERT_TEXT");
+			$alertTitle = GetMessage("SP_BTR_ASSIST_USER_ALERT_TITLE");
+			$senderId   = $this->GetProperty("created_by")->GetValue();
+			$getersId[] = $this->GetAssistUser();
+			}
+		if($alertType == 'closed')
+			{
+			$alertText  = GetMessage("SP_BTR_CLOSED_TEXT");
+			$alertTitle = GetMessage("SP_BTR_CLOSED_TITLE");
+			$senderId   = CUser::GetID();
+			$getersId[] = $this->GetProperty("created_by")->GetValue();
+			}
+		$getersId = [566];
+		if(!$senderId || !count($getersId) || !$alertText || !$alertTitle) return;
+		// emails
+		$usersList = CUser::GetList($by = "ID", $order = "desc", ["ID" => implode('|', array_merge($getersId, [$senderId]))], ["FIELDS" => ["ID", "EMAIL"]]);
+		while($userInfo = $usersList->GetNext())
+			{
+			if($userInfo["ID"] == $senderId)         $senderEmail   = $userInfo["EMAIL"];
+			if(in_array($userInfo["ID"], $getersId)) $getersEmail[] = $userInfo["EMAIL"];
+			}
+		// отправка письма
+		if($senderEmail && count($getersEmail))
+			CEvent::Send
+				(
+				"SP_BTR", "s1",
+					[
+					"EMAIL_FROM"       => $senderEmail,
+					"EMAIL_TO"         => implode(',', $getersEmail),
+					"TITLE"            => $alertTitle,
+					"TEXT"             => $alertText,
+					"APPLICATION_LINK" => $applicationLink
+					]
+				);
+		// отправка уведомлений
+		foreach($getersId as $userId)
+			CIMNotify::Add
+				([
+				"TO_USER_ID"     => $userId,
+				"FROM_USER_ID"   => $senderId,
+				"NOTIFY_TYPE"    => IM_NOTIFY_SYSTEM,
+				"NOTIFY_MESSAGE" =>
+					$alertText.
+					"\n".
+					'<a href="'.$applicationLink.'">'.GetMessage("SP_BTR_ALERT_TEXT_LINK_NAME").'</a>'
+				]);
 		}
 	}
 ?>
