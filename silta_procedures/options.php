@@ -6,10 +6,10 @@ IncludeModuleLangFile(__FILE__);
 /* -------------------------------------------------------------------- */
 /* ---------------------------- переменные ---------------------------- */
 /* -------------------------------------------------------------------- */
-$FixedAssetsWork  = SProceduresFixedAssetsWork::GetInstance();               // процедура ОС
-$BusinessTrip     = SProceduresBusinessTrip::GetInstance();                  // процедура коммандировок
-$departmentsList  = SGetSectionstsList(SCompanyDepartment::GetRootId(), []); // список подраздалений
-$submitButtonName = $moduleId.'-settings-submit';                            // кнопка "submit"
+$FixedAssetsWork  = SProceduresFixedAssetsWork::GetInstance();             // процедура ОС
+$BusinessTrip     = SProceduresBusinessTrip::GetInstance();                // процедура коммандировок
+$departmentsList  = SGetSectionsList(SCompanyDepartment::GetRootId(), []); // список подраздалений
+$submitButtonName = $moduleId.'-settings-submit';                          // кнопка "submit"
 /* -------------------------------------------------------------------- */
 /* ---------------------------- табы формы ---------------------------- */
 /* -------------------------------------------------------------------- */

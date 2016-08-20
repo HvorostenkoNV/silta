@@ -44,6 +44,9 @@ CModule::AddAutoloadClasses
 
 		"SCompanyDepartment" => $class_folder.'company_departmants.php',
 
+		"SCompany"               => $class_folder.'company/company.php',
+		"ScompanyTableStructure" => $class_folder.'company/structure.php',
+
 		"SCompanyTables"                 => $class_folder.'company_tables/company_tables.php',
 		"ScompanyTableUkraineCities"     => $class_folder.'company_tables/ukraine_cities.php',
 		"ScompanyTableContragents"       => $class_folder.'company_tables/contragents.php',
@@ -60,6 +63,6 @@ include 'functions.php';
 include 'traits.php';
 // JS
 CJSCore::Init(['jquery']);
-$GLOBALS["APPLICATION"]->AddHeadScript('/bitrix/js/'.SFramework::GetModuleId().'/main.js');
-$GLOBALS["APPLICATION"]->AddHeadScript('/bitrix/js/'.SFramework::GetModuleId().'/form_elements.js');
+$GLOBALS["APPLICATION"]->AddHeadScript('/bitrix/js/silta_framework/main.js');
+$GLOBALS["APPLICATION"]->AddHeadScript('/bitrix/js/silta_framework/form_elements.js');
 ?>

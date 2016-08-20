@@ -6,15 +6,11 @@ function SgetClearArray($valueArray)
 	$valueArray = array_diff($valueArray, [0, null, '']);
 	return $valueArray;
 	}
-// получить очищенный относительны URL
+// получить очищенный относительный URL
 function SgetClearUrl($link)
 	{
 	$link = str_replace(['http://', 'https://', $_SERVER["HTTP_HOST"]], '', $link);
-	if(substr_count($link, '?'))
-		{
-		$explodeArray     = explode('?', $link);
-		$link = $explodeArray[0];
-		}
+	if(substr_count($link, '?')) $link = explode('?', $link)[0];
 	return $link;
 	}
 // получить строку GET переменных
@@ -28,7 +24,7 @@ function SgetUrlVarsString($varsValues = [], $varsDelete = [])
 	return '?'.implode('&', $implodeArray);
 	}
 // получить список разделов
-function SCreateSectionstsList($sectionsId, $depth)
+function SCreateSectionsList($sectionsId, $depth)
 	{
 	$title = '';
 	if($depth)
@@ -40,10 +36,10 @@ function SCreateSectionstsList($sectionsId, $depth)
 	$GLOBALS["s_sections_list"][$sectionsId] = $title;
 
 	$sectionList = CIBlockSection::GetList(["ID" => 'asc'], ["SECTION_ID" => $sectionsId], false, ["ID", "NAME", "CODE"], false);
-	while($section = $sectionList->GetNext()) SCreateSectionstsList($section["ID"], $depth+1);
+	while($section = $sectionList->GetNext()) SCreateSectionsList($section["ID"], $depth+1);
 	}
 
-function SGetSectionstsList($iblockId, array $sectionsArray = [])
+function SGetSectionsList($iblockId, array $sectionsArray = [])
 	{
 	$GLOBALS["s_sections_list"] = [];
 	if(!count($sectionsArray))
@@ -52,7 +48,7 @@ function SGetSectionstsList($iblockId, array $sectionsArray = [])
 		while($section = $sectionList->GetNext()) $sectionsArray[] = $section["ID"];
 		}
 
-	foreach($sectionsArray as $sectionId) SCreateSectionstsList($sectionId);
+	foreach($sectionsArray as $sectionId) SCreateSectionsList($sectionId);
 	return $GLOBALS["s_sections_list"];
 	}
 /* -------------------------------------------------------------------- */

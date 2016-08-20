@@ -1,6 +1,6 @@
 <?
 $APPLICATION->AddHeadString('<script>SElementSelectorFolder = "http://'.$_SERVER['SERVER_NAME'].$templateFolder.'";</script>');
-$APPLICATION->AddHeadScript('/bitrix/js/'.SFramework::GetModuleId().'/draggable.js');
+$APPLICATION->AddHeadScript('/bitrix/js/silta_framework/draggable.js');
 $APPLICATION->IncludeComponent('silta_framework:form_elements.waiting_screen');
 $APPLICATION->IncludeComponent('silta_framework:form_elements.element_selector.element');
 // Обязательное наличие аттрибута silta-form-element="element-selector" !!!

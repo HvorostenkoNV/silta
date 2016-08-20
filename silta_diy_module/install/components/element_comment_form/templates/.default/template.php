@@ -1,5 +1,5 @@
 <?
-$APPLICATION->AddHeadScript('/bitrix/js/'.SFramework::GetModuleId().'/draggable.js');
+$APPLICATION->AddHeadScript('/bitrix/js/silta_framework/draggable.js');
 /* -------------------------------------------------------------------- */
 /* ---------------------------- титул формы --------------------------- */
 /* -------------------------------------------------------------------- */

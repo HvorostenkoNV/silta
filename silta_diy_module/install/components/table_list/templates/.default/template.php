@@ -1,6 +1,6 @@
 <?
 $APPLICATION->IncludeComponent('silta_framework:form_elements.alert_window');
-$APPLICATION->AddHeadScript('/bitrix/js/'.SFramework::GetModuleId().'/table_fixed_elements.js');
+$APPLICATION->AddHeadScript('/bitrix/js/silta_framework/table_fixed_elements.js');
 /* ============================================================================================= */
 /* ========================================= ПЕРЕМЕННЫЕ ======================================== */
 /* ============================================================================================= */

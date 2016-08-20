@@ -6,9 +6,9 @@ IncludeModuleLangFile(__FILE__);
 /* -------------------------------------------------------------------- */
 /* ---------------------------- переменные ---------------------------- */
 /* -------------------------------------------------------------------- */
-$DiyModule        = SDiyModule::GetInstance();                               // объект модуля DIY
-$submitButtonName = $moduleId.'-settings-submit';                            // имя кнопки "SUBMIT"
-$departmentsList  = SGetSectionstsList(SCompanyDepartment::GetRootId(), []); // список подраздалений
+$DiyModule        = SDiyModule::GetInstance();                             // объект модуля DIY
+$submitButtonName = $moduleId.'-settings-submit';                          // имя кнопки "SUBMIT"
+$departmentsList  = SGetSectionsList(SCompanyDepartment::GetRootId(), []); // список подраздалений
 // таблица "магазины"
 if($DiyModule->GetTable("shops"))
 	$tableParams["shops"] =

@@ -26,7 +26,7 @@ final class SCompanyTables
 			];
 		foreach($this->tablesInfo as $table => $arrayInfo)
 			{
-			$this->tablesInfo[$table]["id"]    = COption::GetOptionString(SFramework::GetModuleId(), $arrayInfo["module_option"]);
+			$this->tablesInfo[$table]["id"]    = COption::GetOptionString("silta_framework", $arrayInfo["module_option"]);
 			$this->tablesInfo[$table]["title"] = GetMessage('SCT_TABLE_TITLE_'.ToUpper($table));
 			}
 		return $this->tablesInfo;

@@ -408,7 +408,7 @@ if($arParams["FIELD_TYPE"] == 'write')
 					"field_params" =>
 						[
 						"value"       => $propertyObject->GetValue(),
-						"list"        => SGetSectionstsList($propAttributes["table"], $propAttributes["start_sections"]),
+						"list"        => SGetSectionsList($propAttributes["table"], $propAttributes["start_sections"]),
 						"input_name"  => $arParams["FIELD_PARAMS"]["INPUT_NAME"],
 						"empty_value" => $arParams["FIELD_PARAMS"]["EMPTY_VALUE"],
 						"width"       => $arParams["FIELD_PARAMS"]["WIDTH"],
