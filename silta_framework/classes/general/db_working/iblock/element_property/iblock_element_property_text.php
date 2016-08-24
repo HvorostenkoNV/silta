@@ -66,7 +66,7 @@ final class SIBlockElementPropertyText extends SIBlockElementProperty
 	/* ----------------------------------------------------------------- */
 	public function UpdatePropertyForFilter()
 		{
-		$this->UnsetProperty();
+		$this->GetElementObject()->UnsetProperty($this->GetName());
 		}
 	}
 ?>

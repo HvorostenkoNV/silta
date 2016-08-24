@@ -1,6 +1,6 @@
 <?
-$MESS["SF_FUNCTION_ERROR_IBE_CONTSR_PARAMS_ERROR"] = 'необходимо передать либо $params["id"] либо $params["code"]';
-$MESS["SF_FUNCTION_ERROR_IBE_IBLOCK_NOT_FOUNDED"]  = 'инфоблок не найден';
+$MESS["SF_FUNCTION_ERROR_IBT_CONTSRUCTOR"]      = 'необходимо передать либо ИД инфоблока($params["id"]) либо его символьный код($params["code"])';
+$MESS["SF_FUNCTION_ERROR_IBT_IBLOCK_NOT_EXIST"] = 'инфоблок не найден';
 
 $MESS["SF_IBLOCK_PROPS_TITLE_STRING"]        = 'строка';
 $MESS["SF_IBLOCK_PROPS_TITLE_NUMBER"]        = 'число';

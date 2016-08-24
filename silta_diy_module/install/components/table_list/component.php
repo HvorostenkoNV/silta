@@ -85,7 +85,7 @@ if(isset($_POST[$inputNameSubmit]))
 $navPageSize = $arParams["ELEMENTS_COUNT"];
 if(!$navPageSize) $navPageSize = 25;
 // общее кол-во элементов
-$navElementCount = count($tableObject->GetQuery([], $tableObject->GetQueryOptions()["filter"]));
+$navElementCount = count($tableObject->GetQuery([], $tableObject->GetQueryOptions()["filter"])); // GetQueryOptions not used
 if(!$navElementCount) $navElementCount = '0';
 // кол-во страниц
 $navPageCount = ceil($navElementCount/$navPageSize);
@@ -156,7 +156,7 @@ foreach($arParams["TABLE_PROPS"] as $property)
 /* -------------------------------------------------------------------- */
 /* --------------------------- тело таблицы --------------------------- */
 /* -------------------------------------------------------------------- */
-foreach($tableObject->GetQuery([$sorterBy => $sorterType], $tableObject->GetQueryOptions()["filter"], ["page" => $navCurrentPage, "page_size" => $navPageSize]) as $elementId)
+foreach($tableObject->GetQuery([$sorterBy => $sorterType], $tableObject->GetQueryOptions()["filter"], ["page" => $navCurrentPage, "page_size" => $navPageSize]) as $elementId) // GetQueryOptions not used
 	foreach($arParams["TABLE_PROPS"] as $property)
 		$tableBodyInfo[$elementId][] = $tableObject->GetElement($elementId)->GetProperty($property);
 /* -------------------------------------------------------------------- */

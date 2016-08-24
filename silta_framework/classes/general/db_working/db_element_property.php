@@ -30,11 +30,10 @@ abstract class SDBElementProperty
 	/* ----------------------------------------------------------------- */
 	/* --------------------- вспомогательные методы -------------------- */
 	/* ----------------------------------------------------------------- */
-	final public function GetElementObject()     {return $this->elementObject;}
-	final public function GetTableObject()       {return $this->GetElementObject()->GetTableObject();}
-	final public function GetName()              {return $this->propertyName;}
-	final public function GetType()              {return $this->propertyType;}
-	final public function UnsetProperty()        {$this->GetElementObject()->UnsetProperty($this->GetName());}
+	final public function GetElementObject() {return $this->elementObject;}
+	final public function GetTableObject()   {return $this->GetElementObject()->GetTableObject();}
+	final public function GetName()          {return $this->propertyName;}
+	final public function GetType()          {return $this->propertyType;}
 	final public function ChangeType($type = '')
 		{
 		$this->GetElementObject()->ChangePropertyType($this->GetName(), $type);

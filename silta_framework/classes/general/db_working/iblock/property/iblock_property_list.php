@@ -1,7 +1,6 @@
 <?
 final class SIBlockPropertyList extends SIBlockProperty
 	{
-	protected $propertyType = 'list';
 	/* ----------------------------------------------------------------- */
 	/* -------------------------- конструктор -------------------------- */
 	/* ----------------------------------------------------------------- */
@@ -17,7 +16,9 @@ final class SIBlockPropertyList extends SIBlockProperty
 				"value" => $arrayInfo["ID"],
 				"code"  => $arrayInfo["EXTERNAL_ID"],
 				];
-		$this->SetAttributeValue("list", $list);
+		$this
+			->SetObjectType("list")
+			->SetAttributeValue("list", $list);
 		}
 	}
 ?>

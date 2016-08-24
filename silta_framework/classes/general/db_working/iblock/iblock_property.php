@@ -6,8 +6,9 @@ abstract class SIBlockProperty extends SDBProperty
 	/* ----------------------------------------------------------------- */
 	protected function ConstructObject()
 		{
-		$this->SetAttributeValue("main_info", 'N');
-		$this->SetAttributeValue("id",        '');
+		$this
+			->SetAttributeValue("main_info", 'N')
+			->SetAttributeValue("id", '');
 		}
 	}
 ?>

@@ -1,13 +1,13 @@
 <?
 class SProceduresFAWProvisionApplicationTable extends SIBlockTable
 	{
-	protected $elementsClass = 'SProceduresFAWProvisionApplicationElement';
 	/* ----------------------------------------------------------------- */
 	/* -------------------------- конструктор -------------------------- */
 	/* ----------------------------------------------------------------- */
 	protected function ConstructObject(array $params = [])
 		{
 		parent::ConstructObject($params);
+		$this->SetElementsClassName("SProceduresFAWProvisionApplicationElement");
 		foreach($this->GetAvailableProps() as $property) $this->SetProperty($property);
 		$FixedAssetsWork = SProceduresFixedAssetsWork::GetInstance();
 		$CompanyTables   = SCompanyTables::GetInstance();

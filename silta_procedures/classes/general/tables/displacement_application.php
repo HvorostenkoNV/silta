@@ -1,13 +1,13 @@
 <?
 class SProceduresFAWDisplacementApplicationTable extends SIBlockTable
 	{
-	protected $elementsClass = 'SProceduresFAWDisplacementApplicationElement';
 	/* ----------------------------------------------------------------- */
 	/* -------------------------- конструктор -------------------------- */
 	/* ----------------------------------------------------------------- */
 	protected function ConstructObject(array $params = [])
 		{
 		parent::ConstructObject($params);
+		$this->SetElementsClassName("SProceduresFAWDisplacementApplicationElement");
 		foreach($this->GetAvailableProps() as $property) $this->SetProperty($property);
 		$FixedAssetsWork = SProceduresFixedAssetsWork::GetInstance();
 		$CompanyTables   = SCompanyTables::GetInstance();

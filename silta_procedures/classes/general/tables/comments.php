@@ -1,13 +1,13 @@
 <?
 class SProceduresFAWCommentsTable extends SIBlockTable
 	{
-	protected $elementsClass = 'SProceduresFAWCommentsElement';
 	/* ----------------------------------------------------------------- */
 	/* -------------------------- конструктор -------------------------- */
 	/* ----------------------------------------------------------------- */
 	protected function ConstructObject(array $params = [])
 		{
 		parent::ConstructObject($params);
+		$this->SetElementsClassName("SProceduresFAWCommentsElement");
 		foreach($this->GetAvailableProps() as $property) $this->SetProperty($property);
 		$this->GetProperty("created_date")->SetAttributes(["time" => 'Y']);
 		/* ----------------------------------------- */

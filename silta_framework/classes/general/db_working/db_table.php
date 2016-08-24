@@ -2,10 +2,10 @@
 IncludeModuleLangFile(__FILE__);
 abstract class SDBTable
 	{
-	protected
+	private
 		$elementsClass  = '',                                  // имя класса "элемент таблицы"
 		$availableProps = [],                                  // массив имен допустимых свойств таблицы
-		$tableProps     = [],                                  // массив объектов свойств таблицы. Заполняется при создании нового объекта SDBProperty через методы SetProperty и SetUserProperty
+		$tableProps     = [],                                  // массив объектов свойств таблицы
 		$propertyTypes  =                                      // массив допустимых типов свойств таблицы. Обязателен для переопределения в наследуемом классе!!!
 			[
 			"test_type" =>                                          // название типа свойства
@@ -15,14 +15,8 @@ abstract class SDBTable
 				"element_property_class" => 'SIBlockElementPropertyTest' // имя класса типа свойства элемента
 				],
 			],
-		$queryOptions   =                                      // параметры выборки
-			[
-			"sorter"    => [],
-			"filter"    => [],
-			"navigator" => []
-			],
 		$queryCache     = [],                                  // кэш выборки
-		$tableElements  = [],                                  // кэш объектов элементов таблицы
+		$tableElements  = [],                                  // массив объектов элементов таблицы
 		$queryAccess    = [],                                  // фильтр по умолчанию (регулировка доступа)
 		$tableAccess    =                                      // доступ
 			[
@@ -32,64 +26,44 @@ abstract class SDBTable
 			],
 		$errors         = [];                                  // массив ошибок
 	/* ----------------------------------------------------------------- */
-	/* --------------------- вспомогательные методы -------------------- */
-	/* ----------------------------------------------------------------- */
-	final public function GetPropertyTypes() {return $this->propertyTypes;}
-	final public function SetPropertyType($type = '', array $infoArray = [])
-		{
-		if($type && $infoArray["title"] && $infoArray["property_class"] && $infoArray["element_property_class"])
-			$this->propertyTypes[$type] = $infoArray;
-		}
-
-	final public function ClearCache()
-		{
-		$this->queryCache    = [];
-		$this->tableElements = [];
-		}
-	// доступ
-	final public function SetAccess($type = '', $value = false) {$this->tableAccess[$type] = (boolean) $value;}
-	final public function GetAccess($accessType = '')           {return $this->tableAccess[$accessType];}
-	final public function GetAccessArray()                      {return $this->tableAccess;}
-	// ошибки
-	final public function GetErrors()                           {return $this->errors;}
-	final public function SetError($error = '')                 {if($error) $this->errors[] = $error;return false;}
-	final public function UnsetErrors()                         {$this->errors = [];}
-	/* ----------------------------------------------------------------- */
 	/* -------------------------- конструктор -------------------------- */
 	/* ----------------------------------------------------------------- */
 	final public function __construct(array $params = [])
 		{
 		$this->ConstructObject($params);
+		if(!$this->GetElementsClassName()) SthrowFunctionError(GetMessage("SF_TABLE_ERROR_ELEMENT_CLASS_NAME_NOT_SET"));
 		}
 	/* ----------------------------------------------------------------- */
-	/* ---------------------- ВЫБОРКА - параметры ---------------------- */
+	/* ------------------ имя класса элемнтов таблицы ------------------ */
 	/* ----------------------------------------------------------------- */
-	// задать
-	final public function SetQueryOptions(array $params = [])
+	final protected function SetElementsClassName($value = '') {$this->elementsClass = $value;return $this;}
+	final protected function GetElementsClassName()            {return $this->elementsClass;}
+	/* ----------------------------------------------------------------- */
+	/* ----------------------------- доступ ---------------------------- */
+	/* ----------------------------------------------------------------- */
+	final public function SetAccess($type = '', $value = false) {$this->tableAccess[$type] = (boolean) $value;return $this;}
+	final public function GetAccess($accessType = '')           {return $this->tableAccess[$accessType];}
+	final public function GetAccessArray()                      {return $this->tableAccess;}
+	/* ----------------------------------------------------------------- */
+	/* ----------------------------- ошибки ---------------------------- */
+	/* ----------------------------------------------------------------- */
+	final public function SetError($error = '') {if($error) $this->errors[] = $error;return false;}
+	final public function GetErrors()           {return $this->errors;}
+	final public function UnsetErrors()         {$this->errors = [];return $this;}
+	/* ----------------------------------------------------------------- */
+	/* ------------------------------ кэш ------------------------------ */
+	/* ----------------------------------------------------------------- */
+	final public function ClearCache()
 		{
-		foreach($params["sorter"] as $index => $value)
-			if($index && $value && !is_array($value))
-				$this->queryOptions["sorter"] = [$index => $value];
-		foreach($params["filter"] as $index => $value)
-			if($value)
-				$this->queryOptions["filter"][$index] = $value;
-		foreach(["page", "page_size", "limit"] as $type)
-			if($params["navigator"][$type])
-				$this->queryOptions["navigator"][$type] = $params["navigator"][$type];
-		return $this;
-		}
-	// получить
-	final public function GetQueryOptions() {return $this->queryOptions;}
-	// удалить
-	final public function UnsetQueryOptions()
-		{
-		foreach($this->queryOptions as $index => $value) $this->queryOptions[$index] = [];
+		foreach($this->tableElements as $elementObject) $elementObject->ClearCache();
+		$this->queryCache    = [];
+		$this->tableElements = [];
 		return $this;
 		}
 	/* ----------------------------------------------------------------- */
 	/* ----------------- ВЫБОРКА - регулировка доступа ----------------- */
 	/* ----------------------------------------------------------------- */
-	final public function SetQueryAccess(array $params = []) {foreach($params as $index => $value) if($value) $this->queryAccess[$index] = $value;return $this;}
+	final public function SetQueryAccess(array $params = []) {$this->queryAccess = $params;return $this;}
 	final public function GetQueryAccess()                   {return $this->queryAccess;}
 	final public function UnsetQueryAccess()                 {$this->queryAccess = [];return $this;}
 	/* ----------------------------------------------------------------- */
@@ -102,11 +76,11 @@ abstract class SDBTable
 		// преобразование параметров выборки
 		$querySorter    = $this->PrepareQuerySorter($querySorter);
 		$queryFilter    = $this->PrepareQueryFilter($queryFilter);
-		$defaultFilter  = $this->PrepareQueryFilter($this->GetQueryAccess());
+		$accessFilter   = $this->PrepareQueryFilter($this->GetQueryAccess());
 		$queryNavigator = $this->PrepareQueryNavigator($queryNavigator);
 		$emptyQuery     = false;
 		// допустимые значения
-		foreach($defaultFilter as $filterIndex => $valueArray)
+		foreach($accessFilter as $filterIndex => $valueArray)
 			{
 			if(!$queryFilter[$filterIndex])
 				$queryFilter[$filterIndex] = $valueArray;
@@ -125,6 +99,17 @@ abstract class SDBTable
 		return $this->queryCache[$cacheIndex];
 		}
 	/* ----------------------------------------------------------------- */
+	/* ------------------------ СВОЙСТВА - типы ------------------------ */
+	/* ----------------------------------------------------------------- */
+	final public function GetPropertyTypes() {return $this->propertyTypes;}
+	final public function SetPropertyType($type = '', array $infoArray = [])
+		{
+		if(!$type || !$infoArray["title"] || !$infoArray["property_class"] || !$infoArray["element_property_class"])
+			SthrowFunctionError(GetMessage("SF_FUNCTION_ERROR_DBT_SET_PROPERTY_TYPE"));
+		$this->propertyTypes[$type] = $infoArray;
+		return $this;
+		}
+	/* ----------------------------------------------------------------- */
 	/* ---------------------- СВОЙСТВА - получить ---------------------- */
 	/* ----------------------------------------------------------------- */
 	final public function GetProperty($property = '') {return $this->tableProps[$property];}
@@ -132,8 +117,7 @@ abstract class SDBTable
 
 	final public function GetAvailableProps()
 		{
-		if($this->availableProps[0]) return $this->availableProps;
-		$this->availableProps = $this->CalculateAvailableProps();
+		if(!count($this->availableProps)) $this->availableProps = $this->CalculateAvailableProps();
 		return $this->availableProps;
 		}
 	/* ----------------------------------------------------------------- */
@@ -141,30 +125,18 @@ abstract class SDBTable
 	/* ----------------------------------------------------------------- */
 	final public function SetProperty($property = '')
 		{
-		if($this->GetProperty($property) || !in_array($property, $this->GetAvailableProps())) return $this;
+		if($this->GetProperty($property)) return $this;
+		if(!in_array($property, $this->GetAvailableProps())) SthrowFunctionError(str_replace('#PROP_NAME#', $property, GetMessage("SF_TABLE_ERROR_PROP_NOT_SET")));
 		$propertyObject = $this->CreateProperty($property);
 		if($propertyObject) $this->tableProps[$property] = $propertyObject;
 		return $this;
-		}
-	/* ----------------------------------------------------------------- */
-	/* --------------- СВОЙСТВА - задать пользовательское -------------- */
-	/* ----------------------------------------------------------------- */
-	final public function SetUserProperty($name = '', $type = '', array $attributes = [])
-		{
-		if($this->GetProperty($property))  return $this->tableProps[$property];
-		if(!$name || !$type) exit(ShowError(__CLASS__.'::'.__FUNCTION__.' - '.GetMessage("SF_FUNCTION_ERROR_DBT_SUP")));
-
-		if(!$attributes["code"]) $attributes["code"] = $name;
-		$propertyObjectName = $this->GetPropertyTypes()[$type]["property_class"];
-		$this->tableProps[$name] = new $propertyObjectName($this, $name, $attributes);
-		return $this->tableProps[$name];
 		}
 	/* ----------------------------------------------------------------- */
 	/* ---------------------- СВОЙСТВА - удалить ----------------------- */
 	/* ----------------------------------------------------------------- */
 	final public function UnsetProperty($property = '')
 		{
-		if($this->GetProperty($property)) unset($this->tableProps[$property]);
+		unset($this->tableProps[$property]);
 		return $this;
 		}
 	/* ----------------------------------------------------------------- */
@@ -172,13 +144,11 @@ abstract class SDBTable
 	/* ----------------------------------------------------------------- */
 	final public function ChangePropertyType($name = '', $type = '')
 		{
-		if(!$name || !$type) return false;
-		$oldProperty        = $this->GetProperty($name);
+		if(!$name || !$type) SthrowFunctionError(GetMessage("SF_FUNCTION_ERROR_DBT_CHANGE_PROPERTY_TYPE"));
+		$oldProperty = $this->GetProperty($name);
+		if(!$oldProperty) SthrowFunctionError(GetMessage("SF_TABLE_ERROR_PROP_NOT_SET"));
 		$propertyObjectName = $this->GetPropertyTypes()[$type]["property_class"];
-		if(!$oldProperty || !$propertyObjectName) return false;
-
 		$this->tableProps[$name] = new $propertyObjectName($this, $name, $oldProperty->GetAttributes());
-		return $this->tableProps[$name];
 		}
 	/* ----------------------------------------------------------------- */
 	/* ------------------------ элемент таблицы ------------------------ */
@@ -186,8 +156,8 @@ abstract class SDBTable
 	final public function GetElement($elementId = '')
 		{
 		if($elementId != 'new') $elementId = (int) $elementId;
-		if(!$elementId) exit(ShowError(__CLASS__.'::'.__FUNCTION__.' - '.GetMessage("SF_FUNCTION_ERROR_DBT_GE")));
-		$className = $this->elementsClass;
+		if(!$elementId) SthrowFunctionError(GetMessage("SF_FUNCTION_ERROR_DBT_GET_ELEMENT"));
+		$className = $this->GetElementsClassName();
 		// возврат объекта нового элемента
 		if($elementId == 'new')
 			{
@@ -216,10 +186,9 @@ abstract class SDBTable
 	/* ----------------------------------------------------------------- */
 	final public function GetFilterElement()
 		{
-		$className     = $this->elementsClass;
+		$className     = $this->GetElementsClassName();
 		$elementObject = new $className($this, "new");
-		foreach($elementObject->GetPropertyList() as $propertyObject)
-			$propertyObject->UpdateForFilter();
+		foreach($elementObject->GetPropertyList() as $propertyObject) $propertyObject->UpdateForFilter();
 		return $elementObject;
 		}
 	/* ----------------------------------------------------------------- */
@@ -277,13 +246,9 @@ abstract class SDBTable
 				$tableErrorsArray[] = $alertText;
 				}
 		// возврат
-		if(!count($tableErrorsArray))
-			return true;
-		else
-			{
-			foreach($tableErrorsArray as $error) $this->SetError($error);
-			return false;
-			}
+		if(!count($tableErrorsArray)) return true;
+		foreach($tableErrorsArray as $error) $this->SetError($error);
+		return false;
 		}
 	/* ----------------------------------------------------------------- */
 	/* --------------------- МЕТОДЫ ДЛЯ ПЕРЕГРУЗКИ --------------------- */

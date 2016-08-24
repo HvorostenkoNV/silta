@@ -1,13 +1,13 @@
 <?
 class SProceduresBusinessTripTable extends SIBlockTable
 	{
-	protected $elementsClass = 'SProceduresBusinessTripElement';
 	/* ----------------------------------------------------------------- */
 	/* -------------------------- конструктор -------------------------- */
 	/* ----------------------------------------------------------------- */
 	protected function ConstructObject(array $params = [])
 		{
 		parent::ConstructObject($params);
+		$this->SetElementsClassName("SProceduresBusinessTripElement");
 		foreach($this->GetAvailableProps() as $property) $this->SetProperty($property);
 		$BusinessTrip = SProceduresBusinessTrip::GetInstance();
 		/* ----------------------------------------- */

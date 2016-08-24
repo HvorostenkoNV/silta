@@ -56,7 +56,7 @@ final class SDMPropertyElementDiyHistory extends SIBlockElementProperty
 	/* ----------------------------------------------------------------- */
 	public function UpdatePropertyForFilter()
 		{
-		$this->UnsetProperty();
+		$this->GetElementObject()->UnsetProperty($this->GetName());
 		}
 	}
 ?>

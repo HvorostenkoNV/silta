@@ -97,7 +97,7 @@ if($_GET[SDM_URL_ELEMENT_ID_VAR])
 		}
 	// вкладка истории изменений
 	if($_GET[SDM_URL_ELEMENT_TAB_VAR] == 'history')
-		$DiyModule->GetTable("element_history")->SetQueryOptions(["filter" => ["element" => $elementObject->GetElementId()]]);
+		$DiyModule->GetTable("element_history")->SetQueryOptions(["filter" => ["element" => $elementObject->GetElementId()]]); // SetQueryOptions not used
 	// вкладка контактов
 	if($_GET[SDM_URL_ELEMENT_TAB_VAR] == 'contacts')
 		{
@@ -108,7 +108,7 @@ if($_GET[SDM_URL_ELEMENT_ID_VAR])
 	// вкладка истории изменений
 	if($_GET[SDM_URL_ELEMENT_TAB_VAR] == 'sales')
 		{
-		$DiyModule->GetTable("sales")->SetQueryOptions(["filter" => ["diy_shop" => $elementObject->GetElementId()]]);
+		$DiyModule->GetTable("sales")->SetQueryOptions(["filter" => ["diy_shop" => $elementObject->GetElementId()]]); // SetQueryOptions not used
 		$arResult["sales_filter_props"] = $arParams["SALES_FILTER_PROPS"];                                                                          // свойства таблицы продаж
 		$arResult["sales_table_props"]  = $arParams["SALES_TABLE_PROPS"];                                                                           // свойства формы продаж
 		$arResult["add_sale_link"]      = $componentLinks["sales"].SgetUrlVarsString([SDM_URL_ELEMENT_ID_VAR => 'new'], [SDM_URL_ELEMENT_TAB_VAR]); // ссылка "создать продажу"

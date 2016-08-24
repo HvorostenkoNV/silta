@@ -78,7 +78,7 @@ abstract class SDBElement
 	/* ----------------------------------------------------------------- */
 	final public function UnsetProperty($property = '')
 		{
-		if($this->GetProperty($property)) unset($this->tableProps[$property]);
+		unset($this->tableProps[$property]);
 		return $this;
 		}
 	/* ----------------------------------------------------------------- */

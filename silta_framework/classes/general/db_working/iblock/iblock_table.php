@@ -2,19 +2,17 @@
 IncludeModuleLangFile(__FILE__);
 class SIBlockTable extends SDBTable
 	{
-	protected
+	private
 		$iblockId,
-		$iblockCode,
-		$elementsClass = 'SIBlockElement';
-
-	protected static
+		$iblockCode;
+	private static
 		$mainInfoProps =
 			[
 			"name"         => ["code" => 'NAME',        "type" => 'string', "title" => 'Название', "required" => 'on'],
 			"created_by"   => ["code" => 'CREATED_BY',  "type" => 'user',   "title" => 'Кем создано'],
 			"changed_by"   => ["code" => 'MODIFIED_BY', "type" => 'user',   "title" => 'Кем изменено'],
-			"created_date" => ["code" => 'DATE_CREATE', "type" => 'date',   "title" => 'Дата создания'],
-			"changed_date" => ["code" => 'TIMESTAMP_X', "type" => 'date',   "title" => 'Дата изменения'],
+			"created_date" => ["code" => 'DATE_CREATE', "type" => 'date',   "title" => 'Дата создания',  "time" => 'Y'],
+			"changed_date" => ["code" => 'TIMESTAMP_X', "type" => 'date',   "title" => 'Дата изменения', "time" => 'Y'],
 
 			"active"      => ["code" => 'ACTIVE',      "type" => 'boolean', "title" => 'Активность'],
 			"active_from" => ["code" => 'ACTIVE_FROM', "type" => 'date',    "title" => 'Начало активности'],
@@ -27,7 +25,7 @@ class SIBlockTable extends SDBTable
 		{
 		if(!$params["id"] &&  $params["code"]) $filterArray = ["CODE" => $params["code"]];
 		if( $params["id"] && !$params["code"]) $filterArray = ["ID"   => $params["id"]];
-		if(!$filterArray)                      exit(__CLASS__.'::'.__FUNCTION__.' - '.GetMessage("SF_FUNCTION_ERROR_IBE_CONTSR_PARAMS_ERROR"));
+		if(!$filterArray)                      SthrowFunctionError(GetMessage("SF_FUNCTION_ERROR_IBT_CONTSRUCTOR"));
 		// поиск инфоблока
 		$iblockQuery = CIBlock::GetList([], $filterArray, false, false, ["ID", "CODE"]);
 		while($infoArray = $iblockQuery->Fetch())
@@ -35,77 +33,76 @@ class SIBlockTable extends SDBTable
 			$this->iblockId   = $infoArray["ID"];
 			$this->iblockCode = $infoArray["CODE"];
 			}
-		if(!$this->iblockId) exit(__CLASS__.'::'.__FUNCTION__.' - '.GetMessage("SF_FUNCTION_ERROR_IBE_IBLOCK_NOT_FOUNDED"));
-		// типы свойств
-		$this->propertyTypes =
-			[
-			"string" =>
+		if(!$this->iblockId) SthrowFunctionError(GetMessage("SF_FUNCTION_ERROR_IBT_IBLOCK_NOT_EXIST"));
+		// установка параметров
+		$this
+			->SetElementsClassName("SIBlockElement")
+			->SetPropertyType("string",
 				[
 				"title"                  => GetMessage("SF_IBLOCK_PROPS_TITLE_STRING"),
 				"property_class"         => 'SIBlockPropertyString',
 				"element_property_class" => 'SIBlockElementPropertyString'
-				],
-			"number" =>
+				])
+			->SetPropertyType("number",
 				[
 				"title"                  => GetMessage("SF_IBLOCK_PROPS_TITLE_NUMBER"),
 				"property_class"         => 'SIBlockPropertyNumber',
 				"element_property_class" => 'SIBlockElementPropertyNumber'
-				],
-			"date" =>
+				])
+			->SetPropertyType("date",
 				[
 				"title"                  => GetMessage("SF_IBLOCK_PROPS_TITLE_DATE"),
 				"property_class"         => 'SIBlockPropertyDate',
 				"element_property_class" => 'SIBlockElementPropertyDate'
-				],
-			"text" =>
+				])
+			->SetPropertyType("text",
 				[
 				"title"                  => GetMessage("SF_IBLOCK_PROPS_TITLE_TEXT"),
 				"property_class"         => 'SIBlockPropertyText',
 				"element_property_class" => 'SIBlockElementPropertyText'
-				],
-			"section" =>
+				])
+			->SetPropertyType("section",
 				[
 				"title"                  => GetMessage("SF_IBLOCK_PROPS_TITLE_SECTION"),
 				"property_class"         => 'SIBlockPropertySection',
 				"element_property_class" => 'SIBlockElementPropertySection'
-				],
-			"list" =>
+				])
+			->SetPropertyType("list",
 				[
 				"title"                  => GetMessage("SF_IBLOCK_PROPS_TITLE_LIST"),
 				"property_class"         => 'SIBlockPropertyList',
 				"element_property_class" => 'SIBlockElementPropertyList'
-				],
-			"boolean" =>
+				])
+			->SetPropertyType("boolean",
 				[
 				"title"                  => GetMessage("SF_IBLOCK_PROPS_TITLE_BOOLEAN"),
 				"property_class"         => 'SIBlockPropertyBoolean',
 				"element_property_class" => 'SIBlockElementPropertyBoolean'
-				],
-			"user" =>
+				])
+			->SetPropertyType("user",
 				[
 				"title"                  => GetMessage("SF_IBLOCK_PROPS_TITLE_USER"),
 				"property_class"         => 'SIBlockPropertyUser',
 				"element_property_class" => 'SIBlockElementPropertyUser'
-				],
-			"list_element" =>
+				])
+			->SetPropertyType("list_element",
 				[
 				"title"                  => GetMessage("SF_IBLOCK_PROPS_TITLE_TABLE_ELEMENT"),
 				"property_class"         => 'SIBlockPropertyListElement',
 				"element_property_class" => 'SIBlockElementPropertyListElement'
-				],
-			"file" =>
+				])
+			->SetPropertyType("file",
 				[
 				"title"                  => GetMessage("SF_IBLOCK_PROPS_TITLE_FILE"),
 				"property_class"         => 'SIBlockPropertyFile',
 				"element_property_class" => 'SIBlockElementPropertyFile'
-				],
-			"phone" =>
+				])
+			->SetPropertyType("phone",
 				[
 				"title"                  => GetMessage("SF_IBLOCK_PROPS_TITLE_PHONE"),
 				"property_class"         => 'SIBlockPropertyPhone',
 				"element_property_class" => 'SIBlockElementPropertyPhone'
-				]
-			];
+				]);
 		}
 	/* ----------------------------------------------------------------- */
 	/* ------------------------- простые методы ------------------------ */
@@ -148,7 +145,9 @@ class SIBlockTable extends SDBTable
 	/* ----------------------------------------------------------------- */
 	protected function PrepareQueryFilter($optionsArray = [])
 		{
-		$prefixesArray = ['>=', '<=', '><', '!><', '>', '<', '!=', '=', '!', '*'];
+		$className        = $this->GetElementsClassName();                            // имя класса элемента таблицы
+		$NewElementObject = new $className($this, "new");                             // объект нового элемента
+		$prefixesArray    = ['>=', '<=', '!><', '><', '>', '<', '!=', '=', '!', '*']; // допступные префиксы
 		foreach($optionsArray as $index => $value)
 			{
 			// префиксы
@@ -158,11 +157,10 @@ class SIBlockTable extends SDBTable
 					{
 					$prefix = $code;
 					$index  = str_replace($code, '', $index);
+					break;
 					}
 			// использование свойств таблицы
-			$className        = $this->elementsClass;
-			$NewElementObject = new $className($this, "new");
-			$propertyObject   = $NewElementObject->GetProperty($index);
+			$propertyObject = $NewElementObject->GetProperty($index);
 			if($propertyObject)
 				{
 				$index = $propertyObject->GetAttributes()["code"];
@@ -202,15 +200,15 @@ class SIBlockTable extends SDBTable
 	/* ----------------------------------------------------------------- */
 	protected function CreateProperty($property = '')
 		{
-		$attributesArray = [];
-		$propertyType    = '';
+		$propertyAttributes = [];
+		$propertyType       = '';
 		/* ------------------------------------ */
 		/* -------- основные свойства --------- */
 		/* ------------------------------------ */
 		if(self::$mainInfoProps[$property])
 			{
-			$attributesArray = array_merge(self::$mainInfoProps[$property], ["main_info" => 'Y']);
-			$propertyType    = self::$mainInfoProps[$property]["type"];
+			$propertyAttributes = array_merge(self::$mainInfoProps[$property], ["main_info" => 'Y']);
+			$propertyType       = self::$mainInfoProps[$property]["type"];
 			}
 		/* ------------------------------------ */
 		/* --------- свойство таблицы --------- */
@@ -221,17 +219,16 @@ class SIBlockTable extends SDBTable
 			while($propertyInfo = $propertyList->GetNext())
 				{
 				// основная инфа
-				$attributesArray =
+				$propertyAttributes =
 					[
 					"id"       => $propertyInfo["ID"],
 					"code"     => $propertyInfo["CODE"],
-
 					"title"    => $propertyInfo["NAME"],
 					"sort"     => $propertyInfo["SORT"],
 					"multiply" => $propertyInfo["MULTIPLE"],
 					"table"    => $propertyInfo["LINK_IBLOCK_ID"]
 					];
-				if($propertyInfo["IS_REQUIRED"] == 'Y') $attributesArray["required"] = 'on';
+				if($propertyInfo["IS_REQUIRED"] == 'Y') $propertyAttributes["required"] = 'on';
 				// опр-е типа свойства
 				switch($propertyInfo["PROPERTY_TYPE"])
 					{
@@ -251,8 +248,8 @@ class SIBlockTable extends SDBTable
 		/* --------- создание объекта --------- */
 		/* ------------------------------------ */
 		$propertyObjectName = $this->GetPropertyTypes()[$propertyType]["property_class"];
-		if(!$propertyObjectName || !$attributesArray) return false;
-		return new $propertyObjectName($this, $property, $attributesArray);
+		if(!$propertyObjectName || !count($propertyAttributes)) return false;
+		return new $propertyObjectName($this, $property, $propertyAttributes);
 		}
 	}
 ?>

@@ -1,6 +1,13 @@
 <?
 final class SIBlockPropertyString extends SIBlockProperty
 	{
-	protected $propertyType = 'string';
+	/* ----------------------------------------------------------------- */
+	/* -------------------------- конструктор -------------------------- */
+	/* ----------------------------------------------------------------- */
+	protected function ConstructObject()
+		{
+		parent::ConstructObject();
+		$this->SetObjectType("string");
+		}
 	}
 ?>

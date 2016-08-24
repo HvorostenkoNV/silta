@@ -1,7 +1,6 @@
 <?
 class SDiyModuleTableShopContacts extends SIBlockTable
 	{
-	protected $elementsClass = 'SDiyModuleElementShopContacts';
 	/* ----------------------------------------------------------------- */
 	/* -------------------------- конструктор -------------------------- */
 	/* ----------------------------------------------------------------- */
@@ -9,6 +8,7 @@ class SDiyModuleTableShopContacts extends SIBlockTable
 		{
 		parent::ConstructObject($params);
 		$DiyModule = SDiyModule::GetInstance();
+		$this->SetElementsClassName("SDiyModuleElementShopContacts");
 		foreach($this->GetAvailableProps() as $property)
 			if(!in_array($property, ["created_by", "changed_by", "created_date", "changed_date", "active_from", "active_to", "active"]))
 				$this->SetProperty($property);

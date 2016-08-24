@@ -1,4 +1,17 @@
 <?
+// вывод ошибок методов классов
+function SthrowFunctionError($title = '')
+	{
+	$functionInfo      = debug_backtrace()[1];
+	$functionArguments = [];
+	foreach((new ReflectionClass($functionInfo["class"]))->getMethod($functionInfo["function"])->getParameters() as $paramsObject)
+		{
+		$argumentType = 'string';
+		if($paramsObject->isArray ()) $argumentType = 'array';
+		$functionArguments[] = $argumentType.' '.$paramsObject->name.' = '.$paramsObject->getDefaultValue();
+		}
+	exit(ShowError($functionInfo["class"].'::'.$functionInfo["function"].'('.implode(', ', $functionArguments).') - '.$title));
+	}
 // получить очищенный массив
 function SgetClearArray($valueArray)
 	{

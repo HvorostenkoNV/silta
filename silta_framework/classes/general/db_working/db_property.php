@@ -1,20 +1,19 @@
 <?
 abstract class SDBProperty
 	{
-	protected
-		$tableObject  = false,       // родительская таблица, объект SDBTable
-		$propertyName = '',          // имя свойства
-		$propertyType = '',          // тип свойства
-		$attributes   =              // массив аттрибутов свойства
+	private
+		$tableObject  = false, // родительская таблица, объект SDBTable
+		$propertyName = '',    // имя свойства
+		$propertyType = '',    // тип свойства
+		$attributes   =        // массив аттрибутов свойства
 			[
-			"code"     => '',             // символьный код свойства
-			"title"    => '',             // обязательность свойства к заполнению = Y/N
-			"sort"     => '',             // порядок свойства в инфоблоке
-			"multiply" => 'N',            // множественность значений свойства = Y/N
-			"required" => 'N',            // обязательность свойства к заполнению = on/off/N
-
-			"default_value"        => [], // массив значений по умолчанию. Передается в том же формате, что и при вызове метода SetValue($valueArray)
-			"available_value"      => []  // массив допустимых значений. Передается в том же формате, что и при вызове метода SetValue($valueArray)
+			"code"            => '',  // символьный код свойства
+			"title"           => '',  // обязательность свойства к заполнению = Y/N
+			"sort"            => '',  // порядок свойства в инфоблоке
+			"multiply"        => 'N', // множественность значений свойства = Y/N
+			"required"        => 'N', // обязательность свойства к заполнению = on/off/N
+			"default_value"   => [],  // массив значений по умолчанию
+			"available_value" => []   // массив допустимых значений
 			];
 	/* ----------------------------------------------------------------- */
 	/* -------------------------- конструктор -------------------------- */
@@ -25,6 +24,7 @@ abstract class SDBProperty
 		$this->tableObject  = $tableObject;
 		$this->propertyName = $propertyName;
 		$this->ConstructObject();
+		if(!$this->GetType()) SthrowFunctionError(GetMessage("SF_PROPERTY_ERROR_TYPE_NOT_EXIST"));
 		$this->SetAttributes($attributes);
 		}
 	/* ----------------------------------------------------------------- */
@@ -33,18 +33,19 @@ abstract class SDBProperty
 	final public function GetTableObject() {return $this->tableObject;}
 	final public function GetName()        {return $this->propertyName;}
 	final public function GetType()        {return $this->propertyType;}
-	final public function UnsetProperty()  {$this->GetTableObject()->UnsetProperty($this->GetName());}
 
 	final public function ChangeType($type = '')
 		{
 		$this->GetTableObject()->ChangePropertyType($this->GetName(), $type);
 		return $this->GetTableObject()->GetProperty($this->GetName());
 		}
+
+	final protected function SetAttributeValue($index = '', $value = '') {$this->attributes[$index] = $value;return $this;}
+	final protected function SetObjectType($value = '')                  {$this->propertyType = $value;      return $this;}
 	/* ----------------------------------------------------------------- */
 	/* --------------------------- аттрибуты --------------------------- */
 	/* ----------------------------------------------------------------- */
-	final public function SetAttributeValue($index = '', $value) {$this->attributes[$index] = $value;}
-	final public function GetAttributes()                        {return $this->attributes;}
+	final public function GetAttributes() {return $this->attributes;}
 
 	final public function SetAttributes(array $params = [])
 		{

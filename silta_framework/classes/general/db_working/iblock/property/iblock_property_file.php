@@ -1,6 +1,13 @@
 <?
 final class SIBlockPropertyFile extends SIBlockProperty
 	{
-	protected $propertyType = 'file';
+	/* ----------------------------------------------------------------- */
+	/* -------------------------- конструктор -------------------------- */
+	/* ----------------------------------------------------------------- */
+	protected function ConstructObject()
+		{
+		parent::ConstructObject();
+		$this->SetObjectType("file");
+		}
 	}
 ?>

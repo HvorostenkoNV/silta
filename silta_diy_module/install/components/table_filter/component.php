@@ -25,7 +25,7 @@ if(!$arParams["FILTER_PROPS"][0]) return;
 
 foreach($elementObject->GetPropertyList() as $property => $propertyObject)
 	if(!in_array($property, $arParams["FILTER_PROPS"]))
-		$propertyObject->UnsetProperty();
+		$elementObject->UnsetProperty($property);
 /* -------------------------------------------------------------------- */
 /* ---------------------------- обработчик ---------------------------- */
 /* -------------------------------------------------------------------- */
@@ -55,7 +55,7 @@ foreach($_SESSION[$filterVarName][$USER->GetId()] as $property => $value)
 	$propertyObject = $elementObject->GetProperty($property);
 	if(!$propertyObject || !$value) continue;
 	$propertyObject->SetValue($value);
-	$tableObject->SetQueryOptions(["filter" => ['*'.$property => $propertyObject->GetFilter()]]);
+	$tableObject->SetQueryOptions(["filter" => ['*'.$property => $propertyObject->GetFilter()]]); // SetQueryOptions not used
 	}
 /* -------------------------------------------------------------------- */
 /* ------------------------- свойства фильтра ------------------------- */

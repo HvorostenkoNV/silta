@@ -1,6 +1,13 @@
 <?
 final class SIBlockPropertyNumber extends SIBlockProperty
 	{
-	protected $propertyType = 'number';
+	/* ----------------------------------------------------------------- */
+	/* -------------------------- конструктор -------------------------- */
+	/* ----------------------------------------------------------------- */
+	protected function ConstructObject()
+		{
+		parent::ConstructObject();
+		$this->SetObjectType("number");
+		}
 	}
 ?>
