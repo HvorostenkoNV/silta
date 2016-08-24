@@ -146,7 +146,7 @@ abstract class SDBTable
 		{
 		if(!$name || !$type) SthrowFunctionError(GetMessage("SF_FUNCTION_ERROR_DBT_CHANGE_PROPERTY_TYPE"));
 		$oldProperty = $this->GetProperty($name);
-		if(!$oldProperty) SthrowFunctionError(GetMessage("SF_TABLE_ERROR_PROP_NOT_SET"));
+		if(!$oldProperty) SthrowFunctionError(str_replace('#PROP_NAME#', $name, GetMessage("SF_TABLE_ERROR_PROP_NOT_SET")));
 		$propertyObjectName = $this->GetPropertyTypes()[$type]["property_class"];
 		$this->tableProps[$name] = new $propertyObjectName($this, $name, $oldProperty->GetAttributes());
 		}

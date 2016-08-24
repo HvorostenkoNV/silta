@@ -1,13 +1,12 @@
 <?
-IncludeModuleLangFile(__FILE__);
 abstract class SDBElement
 	{
-	protected
+	private
 		$tableObject,      // родительская таблица, объект SDBTable
 		$elementId,        // ИД элемента/new
-		$tableProps  = [], // массив объектов свойств элемента. Заполняется при создании объекта. Берутся свойства родительской таблицы
+		$tableProps  = [], // массив объектов свойств элемента
 		$errors      = [], // массив ошибок
-		$accessArray =     // массив досутпов к работе с элементом
+		$accessArray =     // доступ
 			[
 			"write"  => false, // доступ на запись
 			"delete" => false  // доступ на удаление
@@ -18,7 +17,7 @@ abstract class SDBElement
 	final public function __construct($tableObject = false, $elementId = '')
 		{
 		if($elementId != 'new') $elementId = (int)$elementId;
-		if(!is_subclass_of($tableObject, 'SDBTable') || !$elementId) return false;
+		if(!is_subclass_of($tableObject, 'SDBTable') || !$elementId) SthrowFunctionError(GetMessage("SF_FUNCTION_ERROR_DBE_CONSTRUCTOR"));
 		// запись свойств
 		$this->tableObject = $tableObject;
 		$this->elementId   = $elementId;
@@ -32,15 +31,10 @@ abstract class SDBElement
 	/* ----------------------------------------------------------------- */
 	/* --------------------- вспомогательные методы -------------------- */
 	/* ----------------------------------------------------------------- */
-	final public function GetTableObject()            {return $this->tableObject;}
-	final public function GetElementId()              {return $this->elementId;}
-	final public function GetProperty($property = '') {return $this->tableProps[$property];}
-	final public function GetPropertyList()           {return $this->tableProps;}
-
-	final public function GetErrors()                 {return $this->errors;}
-	final public function SetError($error = '')       {if($error) $this->errors[] = $error;return false;}
+	final public function GetTableObject() {return $this->tableObject;}
+	final public function GetElementId()   {return $this->elementId;}
 	/* ----------------------------------------------------------------- */
-	/* ----------------------- методы по доступу ----------------------- */
+	/* ----------------------------- доступ ---------------------------- */
 	/* ----------------------------------------------------------------- */
 	final public function GetAccess($accessType = '') {return $this->accessArray[$accessType];}
 	final public function GetAccessArray()            {return $this->accessArray;}
@@ -62,15 +56,27 @@ abstract class SDBElement
 		$this->AccessCalculating();
 		}
 	/* ----------------------------------------------------------------- */
+	/* ----------------------------- ошибки ---------------------------- */
+	/* ----------------------------------------------------------------- */
+	final public function GetErrors()           {return $this->errors;}
+	final public function SetError($error = '') {if($error) $this->errors[] = $error;return false;}
+	/* ----------------------------------------------------------------- */
+	/* ---------------------- СВОЙСТВА - получить ---------------------- */
+	/* ----------------------------------------------------------------- */
+	final public function GetProperty($property = '') {return $this->tableProps[$property];}
+	final public function GetPropertyList()           {return $this->tableProps;}
+	/* ----------------------------------------------------------------- */
 	/* ----------------------- СВОЙСТВА - задать ----------------------- */
 	/* ----------------------------------------------------------------- */
 	final protected function SetProperty($property = '')
 		{
-		$propertyObject = $this->GetTableObject()->GetProperty($property);
-		if($this->GetProperty($property) || !$propertyObject) return $this;
+		if($this->GetProperty($property)) return $this;
 
+		$propertyObject = $this->GetTableObject()->GetProperty($property);
+		if(!$propertyObject) SthrowFunctionError(str_replace('#PROP_NAME#', $property, GetMessage("SF_TABLE_ERROR_PROP_NOT_SET")));
 		$propertyObjectName = $this->GetTableObject()->GetPropertyTypes()[$propertyObject->GetType()]["element_property_class"];
 		$this->tableProps[$property] = new $propertyObjectName($this, $property, $propertyObject->GetAttributes());
+
 		return $this;
 		}
 	/* ----------------------------------------------------------------- */
@@ -86,11 +92,11 @@ abstract class SDBElement
 	/* ----------------------------------------------------------------- */
 	final public function ChangePropertyType($name = '', $type = '')
 		{
-		if(!$name || !$type) return false;
+		if(!$name || !$type) SthrowFunctionError(GetMessage("SF_FUNCTION_ERROR_DBT_CHANGE_PROPERTY_TYPE"));
 		$oldProperty          = $this->GetProperty($name);
 		$propertyClass        = $this->GetTableObject()->GetPropertyTypes()[$type]["property_class"];
 		$elementPropertyClass = $this->GetTableObject()->GetPropertyTypes()[$type]["element_property_class"];
-		if(!$oldProperty || !$propertyClass || !$elementPropertyClass) return false;
+		if(!$oldProperty) SthrowFunctionError(str_replace('#PROP_NAME#', $name, GetMessage("SF_TABLE_ERROR_PROP_NOT_SET")));
 
 		$tablePropertyObject     = new $propertyClass($this->GetTableObject(), $name, $oldProperty->GetAttributes());
 		$this->tableProps[$name] = new $elementPropertyClass($this, $name, $tablePropertyObject->GetAttributes());

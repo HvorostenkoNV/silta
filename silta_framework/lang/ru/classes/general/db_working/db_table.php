@@ -12,7 +12,10 @@ $MESS["SF_TABLE_ERROR_PROP_IS_MULTIPLY"]           = 'Свойство с код
 $MESS["SF_TABLE_ERROR_PROP_TYPE_WRONG"]            = 'Свойство с кодом "#PROP_NAME#" должно иметь тип "#PROP_TYPE#"';
 $MESS["SF_TABLE_ERROR_PROP_LIST_ELEMENT"]          = 'Свойство с кодом "#PROP_NAME#" должно быть ссылкой на инфоблок с ИД равным #TABLE_ID#';
 // ошибки в ходе выполнения - СВОЙСТВО ТАБЛИЦЫ
-$MESS["SF_PROPERTY_ERROR_TYPE_NOT_EXIST"] = 'Тип свойства не задан';
+$MESS["SF_FUNCTION_ERROR_DBP_CONSTRUCTOR"] = '$tableObject - объект SDBTable(либо потомка), $propertyName - имя свойства, $attributes - массив аттрибутов';
+$MESS["SF_PROPERTY_ERROR_TYPE_NOT_EXIST"]  = 'Тип свойства не задан';
+// ошибки в ходе выполнения - ЕЛЕМЕНТ
+$MESS["SF_FUNCTION_ERROR_DBE_CONSTRUCTOR"] = '$tableObject - объект SDBTable(либо потомка), $elementId - ИД элемента/new';
 // ошибки в элементе
 $MESS["SF_FUNCTION_ERROR_DBE_SE_ELEMENT_NO_ACCESS"]   = 'Нет доступа к записи элемента';
 $MESS["SF_FUNCTION_ERROR_DBE_DE_ELEMENT_NO_ACCESS"]   = 'Нет доступа к удалению элемента';

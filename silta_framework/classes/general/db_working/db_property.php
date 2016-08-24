@@ -20,7 +20,7 @@ abstract class SDBProperty
 	/* ----------------------------------------------------------------- */
 	final public function __construct($tableObject = false, $propertyName = '', array $attributes = [])
 		{
-		if(!is_subclass_of($tableObject, 'SDBTable') || !$propertyName) return false;
+		if(!is_subclass_of($tableObject, 'SDBTable') || !$propertyName) SthrowFunctionError(GetMessage("SF_FUNCTION_ERROR_DBP_CONSTRUCTOR"));
 		$this->tableObject  = $tableObject;
 		$this->propertyName = $propertyName;
 		$this->ConstructObject();

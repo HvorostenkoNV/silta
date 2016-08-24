@@ -1,6 +1,13 @@
 <?
 final class SDMPropertyDiyHistory extends SIBlockProperty
 	{
-	protected $propertyType = 'diy_element_change_history';
+	/* ----------------------------------------------------------------- */
+	/* -------------------------- конструктор -------------------------- */
+	/* ----------------------------------------------------------------- */
+	protected function ConstructObject()
+		{
+		parent::ConstructObject();
+		$this->SetObjectType("diy_element_change_history");
+		}
 	}
 ?>
